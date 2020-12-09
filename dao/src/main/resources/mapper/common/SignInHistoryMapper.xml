@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.signIn.SignInHistoryMapper">
+
+    <resultMap id="result" type="com.yangwang.application.pet.market.model.common.signIn.SignInHistory">
+        <id column="signIn_history_no" property="signInHistoryNo"/>
+        <result column="business_no" property="businessNo"/>
+        <result column="reward_points" property="rewardPoints"/>
+        <result column="date" property="date"/>
+        <result column="time" property="time"/>
+        <result column="week" property="week"/>
+    </resultMap>
+
+    <insert id="save">
+        insert into t_common_signIn_history (
+          `business_no`,
+          `reward_points`,
+          `date`,
+          `time`,
+          `week`
+        ) values (
+          #{signInHistory.businessNo},
+          #{signInHistory.rewardPoints},
+          #{signInHistory.date},
+          #{signInHistory.time},
+          #{signInHistory.week}
+        );
+    </insert>
+    
+    <select id="listByBusinessNo" resultMap="result">
+        select *
+        from t_common_signIn_history
+        where business_no = #{businessNo};
+    </select>
+
+    <select id="getLastByBusinessNo" resultMap="result">
+        select * from t_common_signIn_history
+        where business_no = #{businessNo}
+        order by `date` desc,`time` desc
+        limit 1;
+    </select>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.assess.AssessApplyMapper">
+    <resultMap id="applyResult" type="com.yangwang.application.pet.market.model.assess.AssessApply">
+        <id column="apply_no" property="applyNo" />
+        <result column="business_no" property="business.businessNo"/>
+        <result column="assess_no" property="assess.assessNo"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="apply_status" property="applyStatus"/>
+        <result column="assess_feedBack" property="assessFeedBack"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_assess_apply
+        (
+          business_no,
+          assess_no,
+          apply_time,
+          apply_status,
+          assess_feedBack
+        )
+        values (
+          #{assessApply.business.businessNo},
+          #{assessApply.assess.assessNo},
+          #{assessApply.applyTime},
+          #{assessApply.applyStatus},
+          #{assessApply.assessFeedBack}
+         );
+    </insert>
+    
+    <select id="listByItemBusinessNo" resultMap="applyResult">
+        select * from t_assess_apply
+        where assess_no = (
+          select assess_no from t_assess_info where item_no = (
+            select item_no from t_common_item where business_no = #{businessNo}
+          )
+        );
+    </select>
+
+    <update id="updateAssessFeedBack">
+        update t_assess_apply set assess_feedBack = #{assessFeedBack}
+        where apply_no = #{applyNo};
+    </update>
+    
+    <select id="getByBusinessNoAndAssessNo" resultMap="applyResult">
+        select * from t_assess_apply
+        where business_no = #{businessNo} and assess_no = #{assessNo}
+    </select>
+</mapper>

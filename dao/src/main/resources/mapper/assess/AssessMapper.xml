@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.assess.AssessMapper">
+    <resultMap id="assessMapper" type="com.yangwang.application.pet.market.model.assess.Assess">
+        <result column="item_no" property="item.itemNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_assess_info (
+          title, cover_img, item_no, apply_num, num,
+          recommend_state, price, state, credit,
+          accept_prize_explain, release_time
+        ) values (
+          #{assess.title}, #{assess.coverImg},
+          #{assess.item.itemNo}, #{assess.applyNum},
+          #{assess.num}, #{assess.recommendState},
+          #{assess.price}, #{assess.state},
+          #{assess.credit}, #{assess.acceptPrizeExplain},
+          #{assess.releaseTime}
+        );
+    </insert>
+
+    <select id="listReCommend" resultMap="assessMapper">
+        select assess_no,
+               title,
+               cover_img,
+               item_no,
+               num,
+               recommend_state,
+               state,
+               price
+        from t_assess_info
+        where recommend_state = 1
+    </select>
+
+    <select id="list" resultMap="assessMapper">
+        select assess_no,
+               title,
+               cover_img,
+               item_no,
+               num,
+               recommend_state,
+               state,
+               price
+        from t_assess_info
+        where state = 1
+        limit #{offset}, #{limit};
+    </select>
+
+    <update id="updateAssessApplyNum">
+        update t_assess_info set apply_num = apply_num + #{applyNum}
+        where assess_no = #{assessNo};
+    </update>
+
+    <update id="updateAssessNum">
+        update t_assess_info set num = num + #{num}
+        where assess_no = #{assessNo};
+    </update>
+
+    <select id="getByAssessNo" resultMap="assessMapper">
+        SELECT * FROM t_assess_info
+        WHERE assess_no = #{assessNo};
+    </select>
+
+    <select id="listAllAssess" resultMap="assessMapper">
+        SELECT * FROM t_assess_info
+        <where>
+            <if test="title != null">
+            (
+                title like CONCAT('%', #{title}, '%')
+                OR item_no in
+                  <foreach collection="list" item="itemNo" open="(" close=")" separator=",">
+                     #{itemNo}
+                  </foreach>
+              )
+            </if>
+            <if test="releaseTime != null">
+                AND release_time = #{releaseTime}
+            </if>
+        </where>
+        limit #{offset}, #{limit};
+    </select>
+</mapper>

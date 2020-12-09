@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemListMapper">
+    <select id="list"
+            resultMap="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoResultMap">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoColumn"/>
+        FROM t_common_item a
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoLeftJoinTable"/>
+        JOIN (
+        SELECT item_no
+        FROM t_common_item item
+        JOIN t_business_business business ON item.business_no = business.business_no AND business.state =
+        '${@com.yangwang.application.pet.market.common.enums.BusinessStateEnum@NORMAL.getType()}'
+        <where>
+            <if test="queryItemListParam.businessNo != null">
+                AND item.business_no = #{queryItemListParam.businessNo}
+            </if>
+            <if test="queryItemListParam.itemNo != null">
+                AND item.item_no = #{queryItemListParam.itemNo}
+            </if>
+            <if test="queryItemListParam.petSortNo != null">
+                AND (item.pet_sort_no = #{queryItemListParam.petSortNo} or item.pet_sort_no = -1)
+            </if>
+            <if test="queryItemListParam.itemTypeNo != null">
+                AND find_in_set(#{queryItemListParam.itemTypeNo}, item.item_type_no) > 0
+            </if>
+            <if test="queryItemListParam.itemBrandNo != null">
+                AND item.item_brand_no = #{queryItemListParam.itemBrandNo}
+            </if>
+            <if test="queryItemListParam.itemPackNo != null">
+                AND find_in_set(#{queryItemListParam.itemPackNo}, item.item_pack_no) > 0
+            </if>
+            <if test="queryItemListParam.itemState != null">
+                AND item.item_state = #{queryItemListParam.itemState}
+            </if>
+            ORDER BY business.power,CONCAT(item.create_date,' ',item.create_time) DESC
+        </where>
+        LIMIT #{queryItemListParam.offset}, #{queryItemListParam.limit}
+        ) filter ON a.item_no = filter.item_no
+    </select>
+
+    <select id="listManufactorItem"
+            resultMap="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoResultMap">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoColumn"/>
+        FROM t_common_item a
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoLeftJoinTable"/>
+        WHERE a.item_state = 1 and a.business_no IN
+        <foreach collection="listManufactor" item="item" open="(" close=");" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.MessageMapper">
+
+    <resultMap id="CustomerMessageMap" type="com.yangwang.application.pet.market.model.common.CustomerMessage">
+        <id property="messageNo" column="message_no"/>
+        <result property="sendNo" column="send_no"/>
+        <result property="receiveNo" column="receive_no"/>
+        <result property="messageTitle" column="message_title"/>
+        <result property="messageContent" column="message_content"/>
+        <result property="status" column="status"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="link" column="link"/>
+    </resultMap>
+
+    <insert id="insertMessage" parameterType="com.yangwang.application.pet.market.model.common.CustomerMessage">
+        insert into t_common_message
+        (receive_no, message_title, message_content, status, send_time, update_time, link)
+        VALUES (#{customerMessage.receiveNo},
+                #{customerMessage.messageTitle},
+                #{customerMessage.messageContent},
+                #{customerMessage.status},
+                #{customerMessage.sendTime},
+                #{customerMessage.updateTime},
+                #{customerMessage.link});
+    </insert>
+
+    <update id="updateMessage">
+        update t_common_message
+        set update_time = #{updateTime},
+            status      = '${@com.yangwang.application.pet.market.common.enums.MessageStateTypeEnum@READ.getState()}'
+        where message_no = #{messageNo};
+    </update>
+
+    <select id="getMessageByNo" parameterType="java.lang.Integer" resultMap="CustomerMessageMap">
+        select *
+        from t_common_message
+        where message_no = #{messageNo};
+    </select>
+
+    <select id="listMessageByBusinessNo" resultMap="CustomerMessageMap"
+            parameterType="com.yangwang.application.pet.market.model.params.QueryMessageParam">
+        select *
+        from t_common_message
+        where receive_no = #{businessNo}
+        order by update_time desc
+        limit #{start},#{limit};
+    </select>
+
+    <select id="listFollowBusinessNo" resultType="string">
+        select a.business_no
+        from t_market_follow a join t_business_business b
+        on a.business_no = b.business_no
+        join t_common_customer c
+        on b.customer_no = c.customer_no
+        <where>
+            <if test="queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_BUSINESS">
+                and a.follow_business_no = #{keyNo}
+            </if>
+            <if test="queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_PET">
+                and a.pet_no = #{keyNo}
+            </if>
+            <if test="queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_ITEM">
+                and a.item_no = #{keyNo}
+            </if>
+        </where>
+        group by a.business_no;
+    </select>
+
+    <select id="listMessageByUpdateTimeAndBusinessNo" resultMap="CustomerMessageMap">
+        select *
+        from t_common_message
+        where receive_no = #{businessNo}
+        <if test="lastGetTime != null">
+            and update_time >=  #{lastGetTime}
+        </if>
+        order by update_time desc
+    </select>
+
+    <select id="countMsgByUpdateTimeAndBusinessNo" resultType="int">
+        select count(*)
+        from t_common_message
+        where receive_no = #{businessNo}
+        <if test="lastGetTime != null">
+            and update_time >=  #{lastGetTime}
+        </if>
+        order by update_time desc
+    </select>
+</mapper>

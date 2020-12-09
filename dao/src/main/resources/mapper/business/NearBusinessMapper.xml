@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.NearBusinessMapper">
+    <resultMap id="areaBusinessNearResultVo" type="com.yangwang.application.pet.market.model.vo.AreaBusinessVO">
+        <id column="area" property="area"/>
+        <collection property="businesses" ofType="com.yangwang.application.pet.market.model.vo.NearBusinessVO">
+            <id column="business_no" property="business.businessNo"/>
+            <result column="business_name" property="business.businessName"/>
+            <result column="start_hours" property="business.startHours"/>
+            <result column="end_hours" property="business.endHours"/>
+            <result column="contact" property="business.contact"/>
+            <result column="contact_phone" property="business.contactPhone"/>
+            <result column="describe" property="business.describe"/>
+            <result column="auth_type" property="business.authType"/>
+            <result column="fans" property="business.fans"/>
+            <result column="longitude" property="business.longitude"/>
+            <result column="latitude" property="business.latitude"/>
+            <result column="province" property="business.province"/>
+            <result column="city" property="business.city"/>
+            <result column="area" property="business.area"/>
+            <result column="detail_address" property="business.detailAddress"/>
+            <result column="head_img" property="business.headImg"/>
+            <result column="we_chat_img" property="business.weChatImg"/>
+            <result column="distance" property="distance"/>
+        </collection>
+    </resultMap>
+
+    <select id="listAreaBusinessNearResultVo"
+            resultMap="areaBusinessNearResultVo">
+        select a.*,
+               (6371 * acos(
+                               cos(radians(37))
+                               * cos(radians(#{lat}))
+                               * cos(radians(#{lng}) - radians(-122))
+                           + sin(radians(37))
+                                   * sin(radians(#{lat}))
+                   )
+                   ) AS distance
+        from t_business_business a
+        WHERE city = #{city}
+          AND auth_type > 0
+          AND state = 1
+        ORDER by power
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="listAllCity" resultType="java.lang.String">
+        SELECT city
+        FROM t_business_business
+        WHERE state = 1
+          AND auth_type > 0
+        GROUP BY city;
+    </select>
+</mapper>

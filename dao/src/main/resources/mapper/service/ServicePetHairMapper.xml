@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServicePetHairMapper">
+	<select id="listServicePetHair" resultType="com.yangwang.application.pet.market.model.common.PetHair">
+		select a.hair_length, b.hair_length_name from t_service_price a
+		join t_common_pet_hair b on a.hair_length = b.hair_length
+		where service_id = #{serviceID}
+		and pet_sort_no = #{petSortNo}
+		group by a.hair_length, b.hair_length_name
+	</select>
+
+    <select id="listAllServicePetHair" resultType="com.yangwang.application.pet.market.model.common.PetHair">
+		select hair_length, hair_length_name from t_common_pet_hair
+	</select>
+</mapper>

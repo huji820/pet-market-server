@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.signIn.SignInPeriodMapper">
+    <resultMap id="result" type="com.yangwang.application.pet.market.model.common.signIn.SignInPeriod">
+        <id column="signIn_period_no" property="signInPeriodNo"/>
+        <result column="bonus_points" property="bonusPoints"/>
+        <result column="sn" property="sn"/>
+    </resultMap>
+
+    <select id="countList" resultType="integer">
+        select count(*) from t_common_signIn_period;
+    </select>
+
+    <select id="listAll" resultMap="result">
+        select * from t_common_signIn_period;
+    </select>
+
+    <select id="getBySignInPeriodNo" resultType="com.yangwang.application.pet.market.model.common.signIn.SignInPeriod">
+        select * from t_common_signIn_period
+        where signIn_period_no = #{signInPeriod};
+    </select>
+
+    <select id="getBySn" resultType="com.yangwang.application.pet.market.model.common.signIn.SignInPeriod">
+        select * from t_common_signIn_period
+        where sn = #{sn};
+    </select>
+</mapper>

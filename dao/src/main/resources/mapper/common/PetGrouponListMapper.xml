@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetGrouponListMapper">
+    <resultMap id="petVoMap" type="com.yangwang.application.pet.market.model.vo.PetVo"
+               extends="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoMap">
+        <collection property="petGrouponList" ofType="com.yangwang.application.pet.market.model.common.PetGroupon">
+            <id column="pet_groupon_no" property="petGrouponNo"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="listByParam" resultMap="petVoMap">
+        SELECT
+        price.pet_groupon_no,
+        price.price,
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoColumn"/>
+        FROM
+        t_common_pet a
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoLeftJoinTable"/>
+        LEFt JOIN
+        (SELECT MIN(price) AS price , pet_no, pet_groupon_no FROM t_common_pet_groupon GROUP BY pet_no)
+        price ON a.pet_no = price.pet_no
+        JOIN (
+        SELECT pet.pet_no FROM t_common_pet pet JOIN t_business_business business ON pet.business_no =
+        business.business_no
+        WHERE
+        business.state = '${@com.yangwang.application.pet.market.common.enums.BusinessStateEnum@NORMAL.getType()}'
+        AND pet.pet_state = '${@com.yangwang.application.pet.market.common.enums.OnSaleStateEnum@FOR_SALE.getType()}'
+        AND pet.groupon = 1
+        <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(queryPetMarketListParam.city)">
+            AND business.city = #{queryPetMarketListParam.city}
+        </if>
+        <if test="queryPetMarketListParam.startMoney != null">
+            AND pet.retail_price &gt;= #{queryPetMarketListParam.startMoney}
+        </if>
+        <if test="queryPetMarketListParam.endMoney != null">
+            AND pet.retail_price &lt;= #{queryPetMarketListParam.endMoney}
+        </if>
+        <if test="queryPetMarketListParam.sex != null">
+            AND pet.pet_sex = #{queryPetMarketListParam.sex}
+        </if>
+        ORDER BY pet.power DESC
+        LIMIT #{queryPetMarketListParam.offset},#{queryPetMarketListParam.limit}
+        ) filter ON a.pet_no = filter.pet_no
+    </select>
+</mapper>

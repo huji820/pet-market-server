@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.FollowMapper">
+    <resultMap id="followResultMap" type="com.yangwang.application.pet.market.model.business.Follow">
+        <id column="business_no" property="business.businessNo"/>
+        <result column="follow_business_no" property="followBusiness.businessNo"/>
+        <result column="business_name" property="followBusiness.businessName"/>
+        <result column="register_time" property="followBusiness.registerTime"/>
+        <result column="start_hours" property="followBusiness.startHours"/>
+        <result column="end_hours" property="followBusiness.endHours"/>
+        <result column="contact" property="followBusiness.contact"/>
+        <result column="contact_phone" property="followBusiness.contactPhone"/>
+        <result column="describe" property="followBusiness.describe"/>
+        <result column="pay_bond" property="followBusiness.payBond"/>
+        <result column="fans" property="followBusiness.fans"/>
+        <result column="auth_type" property="followBusiness.authType"/>
+        <result column="longitude" property="followBusiness.longitude"/>
+        <result column="latitude" property="followBusiness.latitude"/>
+        <result column="province" property="followBusiness.province"/>
+        <result column="city" property="followBusiness.city"/>
+        <result column="area" property="followBusiness.area"/>
+        <result column="detail_address" property="followBusiness.detailAddress"/>
+        <result column="head_img" property="followBusiness.headImg"/>
+        <result column="state" property="followBusiness.state"/>
+        <result column="power" property="followBusiness.power"/>
+        <result column="follow_qty" property="followBusiness.followQty"/>
+        <result column="complete" property="followBusiness.complete"/>
+        <result column="credit" property="followBusiness.credit"/>
+        <result column="level" property="followBusiness.level"/>
+        <!-- 宠物 -->
+        <result column="follow_date" property="followDate"/>
+        <result column="pet_pet_no" property="pet.petNo"/>
+        <result column="pet_name" property="pet.petName"/>
+        <result column="pet_pet_sort_no" property="pet.petSort.petSortNo"/>
+        <result column="pet_pet_genre_no" property="pet.petGenre.petGenreNo"/>
+        <result column="pet_sex" property="pet.petSex"/>
+        <result column="pet_sterilization" property="pet.petSterilization"/>
+        <result column="pet_birthday" property="pet.petBirthday"/>
+        <result column="pet_unique_code" property="pet.petUniqueCode"/>
+        <result column="pet_retail_price" property="pet.retailPrice"/>
+        <result column="pet_market_price" property="pet.marketPrice"/>
+        <result column="pet_base_price" property="pet.basePrice"/>
+        <result column="commission" property="pet.commission"/>
+        <result column="create_date" property="pet.createDate"/>
+        <result column="create_time" property="pet.createTime"/>
+        <result column="father_img" property="pet.fatherImg"/>
+        <result column="father_name" property="pet.fatherName"/>
+        <result column="mother_img" property="pet.motherImg"/>
+        <result column="mother_name" property="pet.motherName"/>
+        <result column="pet_description" property="pet.petDescription"/>
+        <result column="weight" property="pet.weight"/>
+        <result column="free_shipping" property="pet.freeShipping"/>
+        <result column="insurance" property="pet.insurance"/>
+        <result column="seven_warranty" property="pet.sevenWarranty"/>
+        <result column="labels" property="pet.labels"/>
+        <result column="collection_qty" property="pet.collectionQty"/>
+        <result column="evaluation_qty" property="pet.evaluationQty"/>
+        <result column="favorable_rate" property="pet.favorableRate"/>
+        <result column="pet_img" property="pet.petImg"/>
+        <result column="pet_business_no" property="pet.business.businessNo"/>
+        <result column="business_name" property="pet.business.businessName"/>
+        <result column="describe" property="pet.business.describe"/>
+        <result column="pay_bond" property="pet.business.payBond"/>
+        <result column="auth_type" property="pet.business.authType"/>
+        <result column="fans" property="pet.business.fans"/>
+        <result column="head_img" property="pet.business.headImg"/>
+        <result column="city" property="pet.city"/>
+        <!--  商品  -->
+        <result column="item_item_no" property="item.itemNo"/>
+        <result column="item_name" property="item.itemName"/>
+        <result column="cover_img" property="item.coverImg"/>
+        <result column="item_base_price" property="item.basePrice"/>
+        <result column="item_market_price" property="item.marketPrice"/>
+        <result column="item_retail_price" property="item.retailPrice"/>
+    </resultMap>
+
+    <sql id="t_market_follow_all_column">
+        `business_no`, `follow_business_no`, `follow_date`, `item_no`, `pet_no`
+    </sql>
+
+    <insert id="save">
+        INSERT INTO t_market_follow (<include refid="t_market_follow_all_column"/>)
+        VALUES (#{follow.business.businessNo}, #{follow.followBusiness.businessNo},
+        #{follow.followDate}, #{follow.item.itemNo}, #{follow.pet.petNo});
+    </insert>
+
+    <delete id="deleteByBusinessFollow">
+        DELETE
+        FROM t_market_follow
+        WHERE business_no = #{follow.business.businessNo}
+        <if test="follow.item != null and follow.item.itemNo != null">
+            AND item_no = #{follow.item.itemNo}
+        </if>
+        <if test="follow.followBusiness != null and follow.followBusiness.businessNo != null">
+            AND follow_business_no = #{follow.followBusiness.businessNo}
+        </if>
+        <if test="follow.pet != null and follow.pet.petNo != null">
+            AND pet_no = #{follow.pet.petNo}
+        </if>
+    </delete>
+
+    <select id="getByBusinessFollow" resultMap="followResultMap">
+        SELECT
+        <include refid="t_market_follow_all_column"/>
+        FROM t_market_follow
+        WHERE business_no = #{follow.business.businessNo}
+        <if test="follow.followBusiness != null and follow.followBusiness.businessNo != null">
+            AND follow_business_no = #{follow.followBusiness.businessNo}
+        </if>
+        <if test="follow.item != null and follow.item.itemNo != null">
+            AND item_no = #{follow.item.itemNo}
+        </if>
+        <if test="follow.pet != null and follow.pet.petNo != null">
+            AND pet_no = #{follow.pet.petNo}
+        </if>
+        LIMIT 1;
+    </select>
+
+    <select id="list" resultMap="followResultMap">
+        SELECT a.business_no
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_BUSINESS">
+            ,b.business_no AS follow_business_no,
+            b.business_name,
+            b.register_time,
+            b.start_hours,
+            b.end_hours,
+            b.contact,
+            b.contact_phone,
+            b.`describe`,
+            b.pay_bond,
+            b.fans,
+            b.auth_type,
+            b.longitude,
+            b.latitude,
+            b.province,
+            b.city,
+            b.area,
+            b.detail_address,
+            b.head_img,
+            b.state,
+            b.power,
+            b.follow_qty,
+            b.complete,
+            b.credit,
+            b.level
+        </if>
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_PET">
+            ,c.pet_no AS pet_pet_no,
+            c.pet_name,
+            c.pet_sort_no,
+            c.pet_genre_no,
+            c.pet_sex,
+            c.pet_sterilization,
+            c.pet_birthday,
+            c.pet_unique_code,
+            c.retail_price AS pet_retail_price,
+            c.market_price AS pet_market_price,
+            c.commission,
+            c.create_date,
+            c.create_time,
+            c.father_img,
+            c.father_name,
+            c.mother_img,
+            c.mother_name,
+            c.pet_description,
+            c.weight,
+            c.free_shipping,
+            c.insurance,
+            c.seven_warranty,
+            c.labels,
+            c.collection_qty,
+            c.evaluation_qty,
+            c.favorable_rate,
+            c.pet_state,
+            c.power,
+            c.sales_volume,
+            c.base_price AS pet_base_price,
+            c.pet_img
+        </if>
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_ITEM">
+            ,d.item_no AS item_item_no,
+            d.item_name,
+            d.cover_img,
+            d.base_price AS item_base_price,
+            d.retail_price AS item_retail_price,
+            d.market_price AS item_market_price
+        </if>
+        FROM t_market_follow a
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_BUSINESS">
+            JOIN t_business_business b ON a.follow_business_no= b.business_no
+        </if>
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_PET">
+            JOIN t_common_pet c ON a.pet_no= c.pet_no
+        </if>
+        <if test="queryFollowParam.queryType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_ITEM">
+            JOIN t_common_item d ON a.item_no= d.item_no
+        </if>
+        WHERE a.business_no=#{queryFollowParam.businessNo}
+        LIMIT #{queryFollowParam.offset},#{queryFollowParam.limit};
+    </select>
+
+    <delete id="delete">
+        DELETE
+        FROM t_market_follow
+        WHERE follow_no = #{followNo};
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.AuthMapper">
+    <resultMap id="auth" type="com.yangwang.application.pet.market.model.vo.AuthVo">
+        <id column="businessNo" property="business.businessNo"/>
+        <result property="shopImages" column="shop_img" />
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_business_auth (`business_no`, `business_auth_type`, `base_data`, `services`, `create_date`,
+                                     `create_time`, `real_name`, `idCard`, `legal_img`, `license_no`, `license_img`,
+                                     `shop_name`, `province`, `city`, `area`, `detail_address`, `shop_img`)
+        VALUES (#{auth.business.businessNo}, #{auth.businessAuthType}, #{auth.baseData},
+                #{auth.services}, #{auth.createDate}, #{auth.createTime},
+                #{auth.realName}, #{auth.idCard}, #{auth.legalImg},
+                #{auth.licenseNo}, #{auth.licenseImg}, #{auth.shopName},
+                #{auth.province}, #{auth.city}, #{auth.area}, #{auth.detailAddress},
+                #{auth.shopImg});
+    </insert>
+
+    <update id="update">
+        UPDATE t_business_auth
+        <set>
+            <if test="auth.businessAuthType != null">
+                `business_auth_type` = #{auth.businessAuthType},
+            </if>
+            <if test="auth.baseData != null">
+                `base_data` = #{auth.baseData},
+            </if>
+            <if test="auth.services != null">
+                `services` = #{auth.services},
+            </if>
+            <if test="auth.createDate != null">
+                `create_date` = #{auth.createDate},
+            </if>
+            <if test="auth.createTime != null">
+                `create_time` = #{auth.createTime},
+            </if>
+            <if test="auth.realName != null">
+                `real_name` = #{auth.realName},
+            </if>
+            <if test="auth.idCard != null">
+                `idCard` = #{auth.idCard},
+            </if>
+            <if test="auth.legalImg != null">
+                `legal_img` = #{auth.legalImg},
+            </if>
+            <if test="auth.licenseNo != null">
+                `license_no` = #{auth.licenseNo},
+            </if>
+            <if test="auth.licenseImg != null">
+                `license_img` = #{auth.licenseImg},
+            </if>
+            <if test="auth.shopName != null">
+                `shop_name` = #{auth.shopName},
+            </if>
+            <if test="auth.province != null">
+                `province` = #{auth.province},
+            </if>
+            <if test="auth.city != null">
+                `city` = #{auth.city},
+            </if>
+            <if test="auth.area != null">
+                `area` = #{auth.area},
+            </if>
+            <if test="auth.detailAddress != null">
+                `detail_address` = #{auth.detailAddress},
+            </if>
+            <if test="auth.shopImg != null">
+                `shop_img` = #{auth.shopImg}
+            </if>
+        </set>
+        WHERE business_no = #{auth.business.businessNo};
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM t_business_auth
+        WHERE business_no = #{businessNo};
+    </delete>
+
+    <select id="getByBusinessNo" resultMap="auth">
+        SELECT a.`business_no`,
+               a.`business_auth_type`,
+               a.`base_data`,
+               a.`services`,
+               a.`create_date`,
+               a.`create_time`,
+               a.`real_name`,
+               a.`idCard`,
+               a.`legal_img`,
+               a.`license_no`,
+               a.`license_img`,
+               a.`shop_name`,
+               a.`province`,
+               a.`city`,
+               a.`area`,
+               a.`detail_address`,
+               a.`shop_img`,
+               b.we_chat_img,
+               b.start_hours,
+               b.end_hours,
+               b.`describe`,
+               b.contact
+        FROM t_business_auth a
+                 LEFT JOIN t_business_business b ON a.business_no = b.business_no
+        WHERE a.business_no =
+              #{businessNo};
+    </select>
+
+    <update id="saveOrUpdate">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="auth.business.authType">
+            SELECT COUNT(1) FROM t_business_auth WHERE business_no = #{auth.business.businessNo};
+        </selectKey>
+        <choose>
+            <when test="auth.business.authType > 0">
+                UPDATE t_business_auth
+                <set>
+                    <if test="auth.businessAuthType != null">
+                        `business_auth_type` = #{auth.businessAuthType},
+                    </if>
+                    <if test="auth.baseData != null">
+                        `base_data` = #{auth.baseData},
+                    </if>
+                    <if test="auth.services != null">
+                        `services` = #{auth.services},
+                    </if>
+                    <if test="auth.createDate != null">
+                        `create_date` = #{auth.createDate},
+                    </if>
+                    <if test="auth.createTime != null">
+                        `create_time` = #{auth.createTime},
+                    </if>
+                    <if test="auth.realName != null">
+                        `real_name` = #{auth.realName},
+                    </if>
+                    <if test="auth.idCard != null">
+                        `idCard` = #{auth.idCard},
+                    </if>
+                    <if test="auth.legalImg != null">
+                        `legal_img` = #{auth.legalImg},
+                    </if>
+                    <if test="auth.licenseNo != null">
+                        `license_no` = #{auth.licenseNo},
+                    </if>
+                    <if test="auth.licenseImg != null">
+                        `license_img` = #{auth.licenseImg},
+                    </if>
+                    <if test="auth.shopName != null">
+                        `shop_name` = #{auth.shopName},
+                    </if>
+                    <if test="auth.province != null">
+                        `province` = #{auth.province},
+                    </if>
+                    <if test="auth.city != null">
+                        `city` = #{auth.city},
+                    </if>
+                    <if test="auth.area != null">
+                        `area` = #{auth.area},
+                    </if>
+                    <if test="auth.detailAddress != null">
+                        `detail_address` = #{auth.detailAddress},
+                    </if>
+                    <if test="auth.shopImg != null">
+                        `shop_img` = #{auth.shopImages}
+                    </if>
+                </set>
+                WHERE business_no = #{auth.business.businessNo};
+            </when>
+            <otherwise>
+                INSERT INTO t_business_auth (`business_no`, `business_auth_type`, `base_data`, `services`,
+                `create_date`,
+                `create_time`, `real_name`, `idCard`, `legal_img`, `license_no`, `license_img`,
+                `shop_name`, `province`, `city`, `area`, `detail_address`, `shop_img`)
+                VALUES (#{auth.business.businessNo}, #{auth.businessAuthType}, #{auth.baseData},
+                #{auth.services}, #{auth.createDate}, #{auth.createTime},
+                #{auth.realName}, #{auth.idCard}, #{auth.legalImg},
+                #{auth.licenseNo}, #{auth.licenseImg}, #{auth.shopName},
+                #{auth.province}, #{auth.city}, #{auth.area}, #{auth.detailAddress},
+                #{auth.shopImages})
+            </otherwise>
+        </choose>
+    </update>
+</mapper>

@@ -1,0 +1,114 @@
+server:
+  port: 7070
+  error:
+    path: /404
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://127.0.0.1/pet?serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&useSSL=false&allowMultiQueries=true&useAffectedRows=true
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: Jxywkj@0820
+      initial-size: 10
+      max-active: 10
+      min-idle: 5
+      max-wait: 6000
+      min-evictable-idle-time-millis: 300000
+      time-between-eviction-runs-millis: 60000
+      validation-query: select 'x'
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 50
+      stat-view-servlet:
+        login-username: ywkj
+        login-password: ywkj
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML5
+  resources:
+    static-locations: classpath:/static/
+  mvc:
+    static-path-pattern: /static/**
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:/ehcache.xml
+mybatis:
+  #实体类所做包
+  type-aliases-package: com.yangwang.application.pet.market.model
+  #mapper.xml所在位置
+  mapper-locations: /mapper/**/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#文件
+file:
+  path: home/pet/images/market/weApp/market
+  # 加载路径
+  load-Path: file:/${file.path}/
+  # 上传路径
+  upload-Path: ${file.path}/
+  # 预览图
+  preview-path: ${file.path}/preview/
+logging:
+  level:
+    com.ywkj.ktyunxiao.dao: error
+  path: ${file.path}
+weChat:
+  weapp:
+    appID: wxca35493268376086
+    appsecret: d4837ac35537130e6c49c67d514a9e24
+    mchID: 1561104711
+    # 这个参数partnerkey是在商户后台配置的一个32位的key,微信商户平台-账户设置-安全设置-api安全
+    partnerkey: taochonghui987654321987654321987
+    alive: 7000000
+    Token: jxywkj
+    certPath: cert/apiclient_cert.p12
+  appID: wxca35493268376086
+  appsecret: d4837ac35537130e6c49c67d514a9e24
+  mchID: 1561104711
+  # 这个参数partnerkey是在商户后台配置的一个32位的key,微信商户平台-账户设置-安全设置-api安全
+  partnerkey: taochonghui987654321987654321987
+  alive: 7000000
+  Token: jxywkj
+  certPath: cert/apiclient_cert.p12
+okHttp:
+  readTimeOut: 20
+  connectTimeout: 60
+  writeTimeout: 60
+amap:
+  key: 7c792ccd9009b2aede70702cac837966
+juhe:
+  weizhan: 455666d4f86d42de76c9c65132856113
+  duanxin: 9297b4023184e9f59d4176e462bb9047
+  appKey: 7329181a58617c39a47944bed03b7b3e
+localHost: https://market.taochonghui.com
+gaode:
+  key: b073129dc87c4bb7ddc7c3e1658e9aec
+variflight:
+  appid: 10788
+  appsecurity: 5d47adbc6a2b7
+pictureHost: https://img.taochonghui.com/weApp/market
+aliyun:
+  oss:
+    accessKeyId: LTAI4FnHixH9ffmT2i3D9CtL
+    accessKeySecret: g3JfvahPWon5iWw8LxercdX5A8L4ZJ
+    bucketName: tch-market
+    endpoint: https://oss-cn-qingdao.aliyuncs.com
+  sms:
+    accessKeyId: LTAI4FnHixH9ffmT2i3D9CtL
+    accessKeySecret: g3JfvahPWon5iWw8LxercdX5A8L4ZJ
+    signName: 淘宠惠
+transport:
+  server:
+    host: http://127.0.0.1:8080

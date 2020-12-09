@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServicePriceMapper">
+
+    <insert id="insertServicePrice">
+        <foreach collection="prices" item="item">
+            insert into t_service_price(service_id, hair_length, start_weight, end_weight, pet_sort_no, service_price,age_type)
+            values (#{item.service.serviceID}, #{item.petHair.hairLength}, #{item.startWeight}, #{item.endWeight},
+            #{item.petSort.petSortNo}, #{item.servicePrice}, #{item.ageType});
+        </foreach>
+    </insert>
+    <delete id="deleteServicePrice">
+        delete from t_service_price where service_id = #{serviceId};
+    </delete>
+
+    <select id="getServicePrice" resultType="com.yangwang.application.pet.market.model.service.ServicePrice">
+        select * from t_service_price
+        where service_id = #{serviceId}
+        and pet_sort_no = #{petSortNo}
+
+        <if test="hairLength != null">
+            and hair_length = #{hairLength}
+        </if>
+
+        <if test="age != null">
+            and age_type = #{age}
+        </if>
+
+        <if test="weight != null">
+            and start_weight &gt;=#{weight} and end_weight &lt;=#{weight}
+        </if>
+    </select>
+</mapper>

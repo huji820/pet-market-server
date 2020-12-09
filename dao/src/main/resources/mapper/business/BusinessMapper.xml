@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.BusinessMapper">
+
+    <resultMap id="allBusiness" type="com.yangwang.application.pet.market.model.business.Business">
+        <id column="business_no" property="businessNo"/>
+        <result column="business_name" property="businessName"/>
+        <result column="register_time" property="registerTime"/>
+        <result column="start_hours" property="startHours"/>
+        <result column="end_hours" property="endHours"/>
+        <result column="contact" property="contact"/>
+        <result column="contact_phone" property="contactPhone"/>
+        <result column="password" property="password"/>
+        <result column="describe" property="describe"/>
+        <result column="pay_bond" property="payBond"/>
+        <result column="auth_type" property="authType"/>
+        <result column="fans" property="fans"/>
+        <result column="follow_qty" property="followQty"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="detail_address" property="detailAddress"/>
+        <result column="head_img" property="headImg"/>
+        <result column="state" property="state"/>
+        <result column="unionId" property="unionId"/>
+        <result column="power" property="power"/>
+        <result column="complete" property="complete"/>
+        <result column="credit" property="credit"/>
+        <result column="level" property="level"/>
+        <result column="is_have_service" property="haveService"/>
+        <result column="balance" property="balance"/>
+        <result column="customer_no" property="customerNo"/>
+        <result column="we_chat_img" property="weChatImg"/>
+        <result column="shop_img" property="shopImages"/>
+        <result column="openid" property="openid"/>
+    </resultMap>
+
+    <resultMap id="business" type="com.yangwang.application.pet.market.model.business.Business">
+        <result property="shopImages" column="shop_img" />
+    </resultMap>
+
+    <sql id="t_business_business_all">
+        `business_no`,
+    `business_name`,
+     `register_time`,
+     `start_hours`,
+     `end_hours`,
+     `contact`,
+     `contact_phone`,
+     `password`,
+     `describe`,
+     `pay_bond`,
+     `auth_type`,
+     `fans`,
+     `longitude`,
+     `latitude`,
+     `province`,
+     `city`,
+     `area`,
+     `detail_address`,
+     `head_img`,
+     `state`,
+     `unionid`,
+     `follow_qty`,
+     `complete`,
+     `credit`,
+      `level`,
+      `balance`,
+      `customer_no`,
+      `we_chat_img`,
+      `shop_img`,
+      `openid`
+    </sql>
+
+
+    <insert id="save">
+        INSERT INTO t_business_business (<include refid="t_business_business_all"/>)
+        VALUES (#{business.businessNo},
+        #{business.businessName},
+        #{business.registerTime},
+        #{business.startHours},
+        #{business.endHours},
+        #{business.contact},
+        #{business.contactPhone},
+        #{business.password},
+        #{business.describe},
+        #{business.payBond},
+        #{business.authType},
+        #{business.fans},
+        #{business.longitude},
+        #{business.latitude},
+        #{business.province},
+        #{business.city},
+        #{business.area},
+        #{business.detailAddress},
+        #{business.headImg},
+        #{business.state},
+        #{business.unionId},
+        #{business.followQty},
+        #{business.complete},
+        #{business.credit},
+        #{business.level},
+        #{business.balance},
+        #{business.customerNo},
+        #{business.weChatImg},
+        #{business.shopImages},
+        #{business.openid}
+        ) ;
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_business_business
+        WHERE business_no = #{businessNo};
+    </delete>
+
+    <update id="update">
+        UPDATE t_business_business
+        <set>
+            <if test="business.headImg != null">
+                `head_img` = #{business.headImg},
+            </if>
+            <if test="business.businessName != null">
+                `business_name` = #{business.businessName},
+            </if>
+            <if test="business.startHours != null">
+                `start_hours` = #{business.startHours},
+            </if>
+            <if test="business.endHours != null">
+                `end_hours` = #{business.endHours},
+            </if>
+            <if test="business.describe != null">
+                `describe` = #{business.describe},
+            </if>
+            <if test="business.longitude != null">
+                `longitude` = #{business.longitude},
+            </if>
+            <if test="business.latitude != null">
+                `latitude` = #{business.latitude},
+            </if>
+            <if test="business.province != null">
+                `province` = #{business.province},
+            </if>
+            <if test="business.city != null">
+                `city` = #{business.city},
+            </if>
+            <if test="business.area != null">
+                `area` = #{business.area},
+            </if>
+            <if test="business.detailAddress != null">
+                `detail_address` = #{business.detailAddress},
+            </if>
+            <if test="business.complete != null">
+                `complete` = #{business.complete},
+            </if>
+            <if test="business.state != null">
+                `state` = #{business.state},
+            </if>
+            <if test="business.weChatImg != null">
+                `we_chat_img` = #{business.weChatImg},
+            </if>
+            <if test="business.shopImages != null">
+                `shop_img` = #{business.shopImages}
+            </if>
+        </set>
+        WHERE `business_no` = #{business.businessNo};
+    </update>
+
+    <update id="updateState">
+        UPDATE t_business_business
+        SET `state` = #{state}
+        WHERE `business_no` = #{businessNo};
+    </update>
+
+    <select id="getByBusinessNoAndNoState" resultMap="business">
+        SELECT
+        <include refid="t_business_business_all"/>
+        FROM t_business_business
+        WHERE `business_no` = #{businessNo};
+    </select>
+
+    <select id="getByBusinessNoAndState" resultType="com.yangwang.application.pet.market.model.business.Business">
+        SELECT
+        <include refid="t_business_business_all"/>
+        FROM t_business_business
+        WHERE `business_no` = #{businessNo}
+        AND state = #{state};
+    </select>
+
+    <select id="getByUnionId" resultType="com.yangwang.application.pet.market.model.business.Business">
+        SELECT
+        <include refid="t_business_business_all"/>
+        FROM t_business_business
+        WHERE unionid = #{unionId};
+    </select>
+
+    <update id="updateAuthType">
+        UPDATE t_business_business
+        SET auth_type = #{authType}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="updatePayBond">
+        UPDATE t_business_business
+        SET pay_bond = #{payBond}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="updateLonAndLat">
+        UPDATE t_business_business
+        SET latitude  = #{lonAndLat.latitude},
+            longitude = #{lonAndLat.longitude}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="updateFansAdd">
+        UPDATE t_business_business
+        SET fans = fans + #{fans}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="updateFansSub">
+        UPDATE t_business_business
+        SET fans = fans - #{fans}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="addFollowQty">
+        UPDATE t_business_business
+        SET follow_qty = follow_qty + #{addFollow}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="addCreditQty">
+        UPDATE t_business_business
+        SET credit = credit + #{credit}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <update id="updateHaveService">
+        UPDATE t_business_business
+        SET is_have_service = #{haveService}
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <select id="getAllBusiness" resultMap="allBusiness">
+        select
+        <include refid="t_business_business_all"/>
+        from t_business_business
+        ORDER BY register_time DESC
+        LIMIT #{offset} , #{limit};
+    </select>
+
+    <select id="getByOpenId" resultType="com.yangwang.application.pet.market.model.business.Business">
+        SELECT a.business_no,
+               a.business_name,
+               a.register_time,
+               a.start_hours,
+               a.end_hours,
+               a.contact,
+               a.contact_phone,
+               a.password,
+               a.`describe`,
+               a.pay_bond,
+               a.fans,
+               a.auth_type,
+               a.longitude,
+               a.latitude,
+               a.province,
+               a.city,
+               a.area,
+               a.detail_address,
+               a.head_img,
+               a.state,
+               a.unionid,
+               a.power,
+               a.follow_qty,
+               a.complete,
+               a.credit,
+               a.balance,
+               a.level,
+               a.is_have_service,
+               a.customer_no,
+               a.we_chat_img
+        FROM t_business_business a
+                 JOIN t_customer_openid b ON a.customer_no = b.customer_no
+        WHERE b.open_id = #{openId};
+    </select>
+
+    <select id="getHaveNewGiftBagByBusinessNo" resultType="integer">
+        SELECT is_have_new_gift_bag FROM t_business_business
+        WHERE business_no = #{businessNo};
+    </select>
+
+    <update id="updateNewGiftBag">
+        update t_business_business set is_have_new_gift_bag = 1
+        WHERE business_no = #{businessNo};
+    </update>
+</mapper>

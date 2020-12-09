@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetAppraiseImgMapper">
+    <insert id="saveList">
+        INSERT INTO t_market_pet_appraise_img ( appraise_no, appraise_img)
+        VALUES
+        <foreach collection="petAppraiseImgList" item="petBaseAppraiseImg" separator="," close=";">
+            (#{petBaseAppraiseImg.petAppraise.appraiseNo} , #{petBaseAppraiseImg.imgAddress})
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_market_pet_appraise_img
+        WHERE appraise_no = #{petAppraiseNo};
+    </delete>
+</mapper>
+

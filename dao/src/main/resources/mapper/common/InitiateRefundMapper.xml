@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.InitiateRefundMapper">
+
+    <resultMap id="BaseResultMap" type="com.yangwang.application.pet.market.model.vo.InitiateRefundVo">
+        <result column="refund_no"  property="refundNo" />
+        <result column="pet_order_no"  property="petOrderNo" />
+        <result column="item_order_no"  property="itemOrderNo" />
+        <result column="refund_order_no"  property="refundOrderNo" />
+        <result column="refund_cause"  property="refundCause" />
+        <result column="refund_fee"  property="refundFee" />
+        <result column="refund_state"  property="refundState" />
+        <result column="cancel_refund_cause"  property="cancelRefundCause" />
+        <result property="totalFee" column="total_fee"/>
+
+        <collection property="initiateRefundImgs" ofType="com.yangwang.application.pet.market.model.common.InitiateRefundImg">
+            <result property="initiateRefundImgNo" column="initiate_refund_img_no"/>
+            <result property="initiateRefundImg"    column="initiate_refund_img"/>
+            <result property="initiateRefundNo"     column="initiate_refund_no"/>
+        </collection>
+    </resultMap>
+
+    <insert id="saveInitiateRefund">
+        insert into t_customer_initiate_refund (
+        refund_no,
+        pet_order_no,
+        item_order_no,
+        refund_order_no,
+        refund_cause,
+        refund_fee,
+        total_fee
+        )
+        VALUES
+        (
+        #{initiateRefund.refundNo}, #{initiateRefund.petOrderNo},
+        #{initiateRefund.itemOrderNo},#{initiateRefund.refundOrderNo},
+        #{initiateRefund.refundCause},#{initiateRefund.refundFee},#{initiateRefund.totalFee}
+        )
+    </insert>
+    <insert id="saveInitiateRefundImg">
+        insert into t_customer_initiate_refund_img (
+        initiate_refund_img,
+        initiate_refund_no
+        )
+        VALUES
+        (
+        #{initiateRefundImg.initiateRefundImg},#{initiateRefundImg.initiateRefundNo}
+        )
+    </insert>
+
+    <update id="updateInitiateRefund">
+        update t_customer_initiate_refund
+        <set>
+            <if test="initiateRefund.refundState != null">
+                refund_state = #{initiateRefund.refundState},
+            </if>
+            <if test="initiateRefund.cancelRefundCause != null">
+                cancel_refund_cause = #{initiateRefund.cancelRefundCause}
+            </if>
+        </set>
+        where  refund_no = #{initiateRefund.refundNo}
+    </update>
+
+    <select id="selectRefundOrderDetail" resultMap="BaseResultMap">
+        SELECT * FROM t_customer_initiate_refund r
+        LEFT JOIN t_customer_initiate_refund_img i
+        ON refund_no = i.initiate_refund_no
+        <trim prefix="WHERE" suffixOverrides="OR|AND">
+            <if test="initiateRefund.petOrderNo != null and !initiateRefund.petOrderNo.isEmpty ">
+                r.pet_order_no = #{initiateRefund.petOrderNo}
+            </if>
+            <if test="initiateRefund.itemOrderNo != null and !initiateRefund.itemOrderNo.isEmpty">
+                r.item_order_no = #{initiateRefund.itemOrderNo}
+            </if>
+            AND r.refund_no = #{initiateRefund.refundNo}
+        </trim>
+    </select>
+
+</mapper>

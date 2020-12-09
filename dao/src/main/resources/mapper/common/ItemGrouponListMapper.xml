@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemGrouponListMapper">
+    <select id="listByParam" resultMap="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoResultMap">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoColumn"/>
+        FROM t_common_item a
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper.showItemVoLeftJoinTable"/>
+        JOIN (
+        SELECT item_no
+        FROM t_common_item item
+        JOIN t_business_business business ON item.business_no = business.business_no AND business.state =
+        '${@com.yangwang.application.pet.market.common.enums.BusinessStateEnum@NORMAL.getType()}'
+        WHERE item.groupon = 1
+        <if test="queryItemListParam.businessNo != null">
+            AND item.business_no = #{queryItemListParam.businessNo}
+        </if>
+        <if test="queryItemListParam.itemNo != null">
+            AND item.item_no = #{queryItemListParam.itemNo}
+        </if>
+        <if test="queryItemListParam.petSortNo != null">
+            AND item.pet_sort_no = #{queryItemListParam.petSortNo}
+        </if>
+        <if test="queryItemListParam.itemTypeNo != null">
+            AND find_in_set(#{queryItemListParam.itemTypeNo}, item.item_type_no) > 0
+        </if>
+        <if test="queryItemListParam.itemBrandNo != null">
+            AND item.item_brand_no = #{queryItemListParam.itemBrandNo}
+        </if>
+        <if test="queryItemListParam.itemPackNo != null">
+            AND item.item_pack_no = #{queryItemListParam.itemPackNo}
+        </if>
+        <if test="queryItemListParam.itemState != null">
+            AND item.item_state = #{queryItemListParam.itemState}
+        </if>
+        ORDER BY business.power,CONCAT(item.create_date,' ',item.create_time) DESC
+        LIMIT #{queryItemListParam.offset}, #{queryItemListParam.limit}
+        ) filter ON a.item_no = filter.item_no
+    </select>
+</mapper>

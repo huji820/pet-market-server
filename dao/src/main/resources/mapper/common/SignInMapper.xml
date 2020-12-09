@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.signIn.SignInMapper">
+
+    <resultMap id="result" type="com.yangwang.application.pet.market.model.common.signIn.SignIn">
+        <id column="signIn_no" property="signInNo"/>
+        <result column="business_no" property="businessNo"/>
+        <result column="continue_times" property="continueTimes"/>
+        <result column="signIn_count" property="signInCount"/>
+        <result column="award_count" property="awardCount"/>
+    </resultMap>
+
+    <insert id="saveOrUpdate" parameterType="com.yangwang.application.pet.market.model.common.signIn.SignIn">
+        DELETE FROM t_common_signIn WHERE business_no = #{businessNo};
+        INSERT INTO t_common_signIn (
+          `business_no`,
+          `continue_times`,
+          `signIn_count`,
+          `award_count`,
+          `sn`
+        ) values (
+          #{businessNo},
+          #{continueTimes},
+          #{signInCount},
+          #{awardCount},
+          #{sn}
+        );
+    </insert>
+
+    <select id="getByBusinessNo" resultType="com.yangwang.application.pet.market.model.common.signIn.SignIn">
+        SELECT * FROM t_common_signIn WHERE business_no = #{businessNo};
+    </select>
+</mapper>

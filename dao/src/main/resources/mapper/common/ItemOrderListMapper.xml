@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemOrderListMapper">
+    <select id="listBuyerOrderByParam"
+            resultMap="com.yangwang.application.pet.market.dao.market.item.ItemOrderMapper.itemOrder">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemOrderMapper.itemOrderColumn"/>
+        FROM t_market_item_order a
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetOrderMapper.leftJoinTable"/>
+        WHERE buyer_no = #{queryOrderListParam.buyerNo}
+        <if test="queryOrderListParam.paymentState != null">
+            AND a.payment_state = #{queryOrderListParam.paymentState}
+        </if>
+        <if test="queryOrderListParam.driverState != null">
+            AND a.driver_state = #{queryOrderListParam.driverState}
+        </if>
+        <if test="queryOrderListParam.receiveState != null">
+            AND a.receive_state = #{queryOrderListParam.receiveState}
+        </if>
+        <if test="queryOrderListParam.evaluateState != null">
+            AND a.evaluate_state = #{queryOrderListParam.evaluateState}
+        </if>
+        <if test="queryOrderListParam.refundsState != null">
+            AND a.refunds_state = #{queryOrderListParam.refundsState}
+        </if>
+        LIMIT #{queryOrderListParam.offset} , #{queryOrderListParam.limit};
+    </select>
+
+    <select id="listShopOrderByParam"
+            resultMap="com.yangwang.application.pet.market.dao.market.item.ItemOrderMapper.itemOrder">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.item.ItemOrderMapper.itemOrderColumn"/>
+        FROM t_market_item_order a
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetOrderMapper.leftJoinTable"/>
+        WHERE shop_no = #{queryOrderListParam.buyerNo}
+        <if test="queryOrderListParam.paymentState != null">
+            AND a.payment_state = #{queryOrderListParam.paymentState}
+        </if>
+        <if test="queryOrderListParam.driverState != null">
+            AND a.driver_state = #{queryOrderListParam.driverState}
+        </if>
+        <if test="queryOrderListParam.receiveState != null">
+            AND a.receive_state = #{queryOrderListParam.receiveState}
+        </if>
+        <if test="queryOrderListParam.evaluateState != null">
+            AND a.evaluate_state = #{queryOrderListParam.evaluateState}
+        </if>
+        <if test="queryOrderListParam.refundsState != null">
+            AND a.refunds_state = #{queryOrderListParam.refundsState}
+        </if>
+        LIMIT #{queryOrderListParam.offset} , #{queryOrderListParam.limit};
+    </select>
+    <delete id="delOrderByNo">
+        DELETE FROM t_market_item_order WHERE payment_state = 0 AND order_no = #{OrderNo}
+    </delete>
+</mapper>

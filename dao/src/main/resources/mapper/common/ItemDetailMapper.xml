@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemDetailMapper">
+
+    <!-- 商品列表resultMap -->
+    <resultMap id="showItemVoResultMap" type="com.yangwang.application.pet.market.model.vo.ItemVo">
+        <id column="item_no" property="item.itemNo"/>
+        <result column="item_name" property="item.itemName"/>
+        <result column="item_profile" property="item.itemProfile"/>
+        <result column="pet_sort_no" property="item.petSort.petSortNo"/>
+        <result column="pet_sort_name" property="item.petSort.petSortName"/>
+        <result column="bar_code" property="item.barCode"/>
+        <result column="item_brand_no" property="item.itemBrand.itemBrandNo"/>
+        <result column="item_brand_name" property="item.itemBrand.itemBrandName"/>
+        <result column="item_stage" property="item.itemStage"/>
+        <result column="gross_weight" property="item.grossWeight"/>
+        <result column="item_validity" property="item.itemValidity"/>
+        <result column="pet_genre_str" property="item.petGenreStr"/>
+        <result column="retail_price" property="item.retailPrice"/>
+        <result column="market_price" property="item.marketPrice"/>
+        <result column="commission" property="item.commission"/>
+        <result column="commission_amount" property="item.commissionAmount"/>
+        <result column="base_price" property="item.basePrice"/>
+        <result column="cover_img" property="item.coverImg"/>
+        <result column="create_date" property="item.createDate"/>
+        <result column="create_time" property="item.createTime"/>
+        <result column="item_description" property="item.itemDescription"/>
+        <result column="item_state" property="item.itemState"/>
+        <result column="free_shipping" property="item.freeShipping"/>
+        <result column="collection_qty" property="item.collectionQty"/>
+        <result column="evaluation_qty" property="item.evaluationQty"/>
+        <result column="favorable_rate" property="item.favorableRate"/>
+        <result column="sales_volume" property="item.salesVolume"/>
+        <result column="groupon" property="item.groupon"/>
+        <result column="group_title" property="item.groupTitle"/>
+        <result column="business_no" property="item.business.businessNo"/>
+        <result column="business_name" property="item.business.businessName"/>
+        <result column="start_hours" property="item.business.startHours"/>
+        <result column="end_hours" property="item.business.endHours"/>
+        <result column="describe" property="item.business.describe"/>
+        <result column="pay_bond" property="item.business.payBond"/>
+        <result column="fans" property="item.business.fans"/>
+        <result column="auth_type" property="item.business.authType"/>
+        <result column="longitude" property="item.business.longitude"/>
+        <result column="latitude" property="item.business.latitude"/>
+        <result column="province" property="item.business.province"/>
+        <result column="city" property="item.business.city"/>
+        <result column="area" property="item.business.area"/>
+        <result column="detail_address" property="item.business.detailAddress"/>
+        <result column="head_img" property="item.business.headImg"/>
+        <result column="state" property="item.business.state"/>
+        <result column="follow_qty" property="item.business.followQty"/>
+        <result column="we_chat_img" property="item.business.weChatImg"/>
+        <result column="contact_phone" property="item.business.contactPhone"/>
+        <result property="item.qty" column="qty" />
+        <result column="source_item_no" property="item.sourceItemNo"/>
+        <result column="Issued_behalf" property="item.issuedBehalf"/>
+        <result column="manufactor" property="item.manufactor"/>
+        <result column="cost_price" property="item.costPrice"/>
+        <collection property="item.itemPacks" ofType="com.yangwang.application.pet.market.model.common.ItemPack" >
+            <id property="itemPackNo" column="item_pack_no" />
+            <result property="itemPackName" column="item_pack_name" />
+            <result property="itemPackImg" column="item_pack_img" />
+        </collection>
+
+        <collection property="item.itemTypes" ofType="com.yangwang.application.pet.market.model.common.ItemType" >
+            <id property="itemTypeNo" column="item_type_no" />
+            <result property="itemTypeName" column="item_type_name" />
+            <result property="itemTypeImg" column="item_type_img" />
+        </collection>
+
+        <collection property="itemCoverList" ofType="com.yangwang.application.pet.market.model.common.ItemCover" >
+            <id property="coverNo" column="cover_no" />
+            <result property="coverAddress" column="cover_address" />
+            <result property="type" column="cover_type" />
+        </collection>
+
+        <collection property="itemGrouponList" ofType="com.yangwang.application.pet.market.model.common.ItemGroupon">
+            <id column="item_groupon_no" property="itemGrouponNo"/>
+            <result column="groupon_qty" property="qty"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <!-- 商品明细resultMap -->
+    <resultMap id="itemResultVoMap" type="com.yangwang.application.pet.market.model.vo.ItemVo"
+               extends="showItemVoResultMap">
+        <collection property="itemCoverList" ofType="com.yangwang.application.pet.market.model.common.ItemCover">
+            <id column="cover_no" property="coverNo"/>
+            <result column="cover_address" property="coverAddress"/>
+            <result column="type" property="type"/>
+            <result column="order" property="order"/>
+        </collection>
+        <collection property="itemGrouponList" ofType="com.yangwang.application.pet.market.model.common.ItemGroupon">
+            <id column="item_groupon_no" property="itemGrouponNo"/>
+            <result column="groupon_qty" property="qty"/>
+            <result column="price" property="price"/>
+        </collection>
+
+        <collection property="itemOrderList" ofType="com.yangwang.application.pet.market.model.market.ItemOrder">
+            <id column="order_no" property="orderNo" />
+            <result column="order_qty" property="totalNum" />
+            <result column="buyer_phone" property="buyerPhone" />
+            <result column="buyer_name" property="buyerName" />
+            <result column="create_date" property="createDate" />
+        </collection>
+    </resultMap>
+
+    <!-- 商品列表查询字段 -->
+    <sql id="showItemVoColumn">
+        a.item_no,
+        a.item_name,
+        a.item_profile,
+        a.pet_sort_no,
+        case when a.pet_sort_no = -1 then '猫狗通用' else b.pet_sort_name end pet_sort_name,
+        c.item_type_no,
+        c.item_type_name,
+        e.item_pack_no,
+        e.item_pack_name,
+        a.item_brand_no,
+        d.item_brand_name,
+        a.business_no,
+        a.bar_code,
+        f.business_name,
+        f.start_hours,
+        f.end_hours,
+        f.`describe`,
+        f.pay_bond,
+        f.fans,
+        f.auth_type,
+        f.longitude,
+        f.latitude,
+        f.province,
+        f.city,
+        f.area,
+        f.detail_address,
+        f.head_img,
+        f.state,
+        f.follow_qty,
+        a.item_stage,
+        a.gross_weight,
+        a.item_validity,
+        a.pet_genreStr,
+        a.retail_price,
+        a.market_price,
+        a.commission,
+        a.base_price,
+        a.cover_img,
+        a.create_date,
+        a.create_time,
+        a.item_description,
+        a.item_state,
+        a.free_shipping,
+        a.collection_qty,
+        a.evaluation_qty,
+        a.favorable_rate,
+        a.sales_volume,
+        a.qty,
+        h.item_groupon_no,
+        h.qty as groupon_qty,
+        h.price,
+        a.groupon,
+        a.group_title,
+        j.cover_no, j.cover_address, j.type as cover_type
+    </sql>
+
+    <!-- 商品明细查询SQL字段 -->
+    <sql id="itemVoColumn">
+        a.item_no,
+        a.item_name,
+        a.item_profile,
+        a.pet_sort_no,
+        case when a.pet_sort_no = -1 then '猫狗通用' else b.pet_sort_name end pet_sort_name,
+        c.item_type_no,
+        c.item_type_name,
+        e.item_pack_no,
+        e.item_pack_name,
+        a.item_brand_no,
+        d.item_brand_name,
+        a.business_no,
+        a.bar_code,
+        f.business_name,
+        f.start_hours,
+        f.end_hours,
+        f.`describe`,
+        f.pay_bond,
+        f.fans,
+        f.auth_type,
+        f.longitude,
+        f.latitude,
+        f.province,
+        f.city,
+        f.area,
+        f.detail_address,
+        f.head_img,
+        f.state,
+        f.follow_qty,
+        f.we_chat_img,
+        f.contact_phone,
+        a.item_stage,
+        a.gross_weight,
+        a.item_validity,
+        a.pet_genreStr,
+        a.retail_price,
+        a.market_price,
+        a.commission,
+        a.base_price,
+        a.cover_img,
+        a.create_date,
+        a.create_time,
+        a.item_description,
+        a.item_state,
+        a.free_shipping,
+        a.collection_qty,
+        a.evaluation_qty,
+        a.favorable_rate,
+        a.sales_volume,
+        a.cost_price,
+        a.qty,
+        g.cover_no,
+        g.cover_address,
+        g.type,
+        g.order,
+        a.groupon,
+        a.group_title,
+        a.source_item_no,
+        a.Issued_behalf,
+        a.manufactor,
+        h.item_groupon_no,
+        h.qty as groupon_qty,
+        h.price,
+        i.order_no,
+        i.create_date as order_date,
+        i.buyer_phone,i.buyer_name,
+        k.qty as order_qty,
+        j.cover_no, j.cover_address, j.type as cover_type
+    </sql>
+
+    <!-- 商品展示的左连接表 -->
+    <sql id="showItemVoLeftJoinTable">
+        LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+        LEFT JOIN t_common_item_type c ON FIND_IN_SET(c.item_type_no, a.item_type_no) > 0
+        LEFT JOIN t_common_item_brand d ON a.item_brand_no = d.item_brand_no
+        LEFT JOIN t_common_item_pack e ON FIND_IN_SET(e.item_pack_no, a.Item_pack_no) > 0
+        LEFT JOIN t_business_business f ON a.business_no = f.business_no
+        LEFT JOIN t_common_item_cover g ON a.item_no = g.item_no
+        LEFT JOIN t_common_item_groupon h ON a.item_no = h.item_no
+        left join t_common_item_cover j on a.item_no = j.item_no
+    </sql>
+
+    <!-- 商品明细的左连接表 -->
+    <sql id="itemVoLeftJoinTable">
+        LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+        LEFT JOIN t_common_item_type c ON FIND_IN_SET(c.item_type_no, a.item_type_no) > 0
+        LEFT JOIN t_common_item_brand d ON a.item_brand_no = d.item_brand_no
+        LEFT JOIN t_common_item_pack e ON FIND_IN_SET(e.item_pack_no, a.Item_pack_no) > 0
+        LEFT JOIN t_business_business f ON a.business_no = f.business_no
+        LEFT JOIN t_common_item_cover g ON a.item_no = g.item_no
+        LEFT JOIN t_common_item_groupon h ON a.item_no = h.item_no
+        LEFT JOIN t_market_item_order_info k ON a.item_no = k.item_no
+        LEFT JOIN t_market_item_order i ON k.order_no = i.order_no
+        LEFT JOIN t_common_item_cover j ON a.item_no = j.item_no
+    </sql>
+
+    <!-- 商品订单的左连接表 -->
+    <sql id="itemOrderLeftJoinTable">
+        LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+        LEFT JOIN t_common_item_type c ON FIND_IN_SET(c.item_type_no, a.item_type_no) > 0
+        LEFT JOIN t_common_item_brand d ON a.item_brand_no = d.item_brand_no
+        LEFT JOIN t_common_item_pack e ON FIND_IN_SET(e.item_pack_no, a.Item_pack_no) > 0
+        LEFT JOIN t_business_business f ON a.business_no = f.business_no
+        LEFT JOIN t_common_item_cover g ON a.item_no = g.item_no
+        LEFT JOIN t_common_item_groupon h ON a.item_no = h.item_no
+        LEFT JOIN t_market_item_order_info k ON a.item_no = k.item_no
+        LEFT JOIN t_market_item_order i ON k.order_no = i.order_no
+        LEFT JOIN t_common_item_cover j ON a.item_no = j.item_no
+    </sql>
+
+    <select id="get" resultMap="itemResultVoMap">
+        SELECT
+        <include refid="itemVoColumn"/>
+        FROM t_common_item a
+        <include refid="itemOrderLeftJoinTable"/>
+        WHERE a.item_no = #{itemNo};
+    </select>
+</mapper>

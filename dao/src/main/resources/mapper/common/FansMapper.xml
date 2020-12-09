@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.FansMapper">
+    <resultMap id="fans" type="com.yangwang.application.pet.market.model.business.Follow">
+        <id column="follow_no" property="followNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="business_name" property="business.businessName"/>
+        <result column="register_time" property="business.registerTime"/>
+        <result column="start_hours" property="business.startHours"/>
+        <result column="end_hours" property="business.endHours"/>
+        <result column="contact" property="business.contact"/>
+        <result column="contact_phone" property="business.contactPhone"/>
+        <result column="describe" property="business.describe"/>
+        <result column="pay_bond" property="business.payBond"/>
+        <result column="fans" property="business.fans"/>
+        <result column="auth_type" property="business.authType"/>
+        <result column="longitude" property="business.longitude"/>
+        <result column="latitude" property="business.latitude"/>
+        <result column="province" property="business.province"/>
+        <result column="city" property="business.city"/>
+        <result column="area" property="business.area"/>
+        <result column="detail_address" property="business.detailAddress"/>
+        <result column="head_img" property="business.headImg"/>
+        <result column="state" property="business.state"/>
+        <result column="follow_qty" property="business.followQty"/>
+        <result column="level" property="business.level"/>
+        <result column="follow_business_no" property="followBusiness.businessNo"/>
+        <result column="pet_no" property="pet.petNo"/>
+        <result column="item_no" property="item.itemNo"/>
+        <result column="follow_date" property="followDate"/>
+    </resultMap>
+
+    <select id="listByParam" resultMap="fans">
+        SELECT
+        a.follow_no,
+        a.business_no,
+        b.business_name,
+        b.register_time,
+        b.start_hours,
+        b.end_hours,
+        b.contact,
+        b.contact_phone,
+        b.`describe`,
+        b.pay_bond,
+        b.fans,
+        b.auth_type,
+        b.longitude,
+        b.latitude,
+        b.province,
+        b.city,
+        b.area,
+        b.detail_address,
+        b.head_img,
+        b.state,
+        b.follow_qty,
+        b.level,
+        b.is_have_service,
+        a.follow_business_no,
+        a.pet_no,
+        a.item_no,
+        a.follow_date
+        FROM t_market_follow a
+        LEFT JOIN t_business_business b ON a.business_no = b.business_no
+        <where>
+            <if test="queryFansListParam.followType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_BUSINESS">
+                a.follow_business_no = #{queryFansListParam.followBusinessNo}
+            </if>
+            <if test="queryFansListParam.followType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_PET">
+                pet_no = #{queryFansListParam.petNo}
+            </if>
+            <if test="queryFansListParam.followType == @com.yangwang.application.pet.market.model.business.Follow@TYPE_ITEM">
+                item_no = #{queryFansListParam.itemNo}
+            </if>
+        </where>
+    </select>
+</mapper>

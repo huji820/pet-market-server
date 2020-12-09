@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.DistributionMapper">
+
+    <resultMap id="distribution" type="com.yangwang.application.pet.market.model.business.Distribution">
+        <id property="distributionID" column="distribution_id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="originalAmount" column="original_amount"/>
+        <result property="getAmount" column="get_amount"/>
+        <result property="linkNo" column="link_no"/>
+        <result property="seller.businessNo" column="seller_business_no"/>
+        <result property="seller.businessName" column="seller_business_name"/>
+        <result property="buyer.businessNo" column="buyer_business_no"/>
+        <result property="buyer.businessName" column="buyer_business_name"/>
+        <result property="distributor.businessNo" column="distributor_business_no"/>
+        <result property="distributor.businessName" column="distributor_business_name"/>
+    </resultMap>
+
+    <select id="listDistribution" resultMap="distribution">
+        select a.*,
+        b.business_no as seller_business_no,
+        b.business_name as seller_business_name,
+        c.business_no as buyer_business_no,
+        c.business_name as buyer_business_name,
+        d.business_no as distributor_business_no,
+        d.business_name as distributor_business_name
+        from t_common_distribution a
+        LEFT join t_business_business b on a.seller_no = b.business_no
+        LEFT join t_business_business c on a.buyer_no = c.business_no
+        LEFT join t_business_business d on a.distributor_no = d.business_no
+        where a.distributor_no = #{businessNo}
+        <if test="@com.yangwang.sysframework.utils.StringUtil@isNotNull(startDate)">
+            and create_date &gt;= #{startDate}
+        </if>
+        <if test="@com.yangwang.sysframework.utils.StringUtil@isNotNull(endDate)">
+            and create_date &lt;= #{endDate}
+        </if>
+        limit #{offset}, #{limit}
+    </select>
+
+    <insert id="save">
+        INSERT INTO t_common_distribution (seller_no,
+                                           buyer_no,
+                                           distributor_no,
+                                           create_date,
+                                           original_amount,
+                                           get_amount,
+                                           link_no)
+        VALUES (#{distribution.seller.businessNo},
+                #{distribution.buyer.businessNo},
+                #{distribution.distributor.businessNo},
+                #{distribution.createDate},
+                #{distribution.originalAmount},
+                #{distribution.getAmount},
+                #{distribution.linkNo});
+    </insert>
+</mapper>

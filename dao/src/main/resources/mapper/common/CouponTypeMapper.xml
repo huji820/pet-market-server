@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.coupon.CouponTypeMapper">
+    <select id="get" resultType="com.yangwang.application.pet.market.model.common.coupon.CouponType">
+        SELECT coupon_type_id,
+               title,
+               preferential_type,
+               discount,
+               `value`,
+               receive_id,
+               receive_num,
+               coupon_credit,
+               expire_notice,
+               atLeast,
+               least_amount,
+               forbid_preference,
+               quota,
+               range_type,
+               business_type,
+               specify_item_ids,
+               specify_service_ids,
+               coupon_credit
+        FROM t_common_coupon_type
+        WHERE coupon_type_id = #{couponTypeId}
+        LIMIT 1;
+    </select>
+
+    <select id="list" resultType="com.yangwang.application.pet.market.model.common.coupon.CouponType">
+        select coupon_type_id,
+               title,
+               preferential_type,
+               discount,
+               `value`,
+               receive_id,
+               receive_num,
+               coupon_credit,
+               expire_notice,
+               atLeast,
+               least_amount,
+               forbid_preference,
+               quota,
+               range_type,
+               business_type,
+               specify_item_ids,
+               specify_service_ids,
+               coupon_credit
+        from t_common_coupon_type
+        <where>
+            coupon_credit &gt;= 0
+            <if test="preferentialType != null">
+                and preferential_type = #{preferentialType}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save">
+        insert into t_common_coupon_type (
+          title,
+          preferential_type,
+          discount,
+          `value`,
+          expire_notice,
+          atLeast,
+          least_amount,
+          forbid_preference,
+          quota,
+          range_type,
+          business_type,
+          specify_item_ids,
+          specify_service_ids,
+          specify_businesses,
+          receive_id,
+          receive_num,
+          coupon_credit
+        ) values (
+          #{couponType.title},
+          #{couponType.preferentialType},
+          #{couponType.discount},
+          #{couponType.value},
+          #{couponType.expireNotice},
+          #{couponType.atLeast},
+          #{couponType.leastAmount},
+          #{couponType.forbidPreference},
+          #{couponType.quota},
+          #{couponType.rangeType},
+          #{couponType.businessType},
+          #{couponType.specifyItemIds},
+          #{couponType.specifyServiceIds},
+          #{couponType.specifyBusinessIds},
+          #{couponType.receiveId},
+          #{couponType.receiveNum},
+          #{couponType.couponCredit},
+        )
+    </insert>
+
+    <select id="listByTitle" resultType="com.yangwang.application.pet.market.model.common.coupon.CouponType">
+        SELECT coupon_type_id,
+               title,
+               preferential_type,
+               discount,
+               `value`,
+               receive_id,
+               receive_num,
+               coupon_credit,
+               expire_notice,
+               atLeast,
+               least_amount,
+               forbid_preference,
+               quota,
+               range_type,
+               business_type,
+               specify_item_ids,
+               specify_service_ids,
+               coupon_credit
+        FROM t_common_coupon_type
+        WHERE title = #{title};
+    </select>
+</mapper>

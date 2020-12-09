@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServiceInfoMapper">
+
+    <resultMap id="service" type="com.yangwang.application.pet.market.model.service.Service">
+        <id property="serviceID" column="service_id"/>
+        <result property="serviceName" column="service_name"/>
+        <result property="servicePrice" column="service_price"/>
+        <result property="state" column="state"/>
+
+        <association property="serviceType" javaType="com.yangwang.application.pet.market.model.service.ServiceType">
+            <id property="serviceTypeNo" column="service_type_no"/>
+            <result property="serviceTypeName" column="service_type_name"/>
+        </association>
+        <collection property="prices" ofType="com.yangwang.application.pet.market.model.service.ServicePrice">
+            <id property="servicePriceID" column="service_price_id"/>
+            <result property="petSort.petSortNo" column="pet_sort_no"/>
+            <result property="startWeight" column="start_weight"/>
+            <result property="endWeight" column="end_weight"/>
+            <result property="ageType" column="age_type"/>
+            <result property="servicePrice" column="leaf_service_price"/>
+            <association property="petSort" javaType="com.yangwang.application.pet.market.model.common.PetSort">
+                <id property="petSortNo" column="pet_sort_no"/>
+                <result property="petSortName" column="pet_sort_name"/>
+            </association>
+
+            <association property="petHair" javaType="com.yangwang.application.pet.market.model.common.PetHair">
+                <id property="hairLength" column="hair_length"/>
+                <result property="hairLengthName" column="hair_length_name"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <resultMap id="serviceInfo" type="com.yangwang.application.pet.market.model.service.Service">
+        <id column="service_id" property="serviceID"/>
+        <result column="service_name" property="serviceName"/>
+        <result column="service_price" property="servicePrice"/>
+        <result column="service_type_no" property="serviceType.serviceTypeNo"/>
+        <result column="service_type_name" property="serviceType.serviceTypeName"/>
+        <result column="icon" property="serviceType.icon"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="business_name" property="business.businessName"/>
+        <collection property="prices" ofType="com.yangwang.application.pet.market.model.service.ServicePrice">
+            <id column="service_price_id" property="servicePriceID"/>
+            <result column="start_weight" property="startWeight"/>
+            <result column="end_weight" property="endWeight"/>
+            <result column="age_type" property="ageType"/>
+            <result column="service_price" property="servicePrice"/>
+            <result column="pet_sort_no" property="petSort.petSortName"/>
+            <result column="pet_sort_name" property="petSort.petSortName"/>
+            <result column="pet_sort_img" property="petSort.petSortImg"/>
+            <result column="hair_length" property="petHair.hairLength"/>
+            <result column="hair_length_name" property="petHair.hairLengthName"/>
+        </collection>
+    </resultMap>
+
+    <insert id="insertServiceInfo" useGeneratedKeys="true" keyProperty="serviceID">
+        insert into t_service_info(service_type_no, business_no, service_name, service_price, state)
+        values (#{serviceType.serviceTypeNo}, #{business.businessNo}, #{serviceName}, #{servicePrice}, #{state})
+    </insert>
+
+
+    <select id="listServiceByBusinessNo" resultMap="service">
+        select a.*,
+        b.service_price_id,
+        b.pet_sort_no,
+        b.hair_length,
+        b.hair_length,
+        b.start_weight,
+        b.end_weight,
+        b.age_type,
+        b.service_price as leaf_service_price,
+        c.service_type_name,
+        d.pet_sort_no,
+        d.pet_sort_name,
+        e.hair_length_name
+        from t_service_info a
+        left join t_service_price b on a.service_id = b.service_id
+        left join t_common_pet_sort d on b.pet_sort_no = d.pet_sort_no
+        left join t_common_pet_hair e on b.hair_length = e.hair_length
+        join t_service_type c on a.service_type_no = c.service_type_no
+        where business_no = #{businessNo}
+        <if test="state != -1">
+            and a.state = #{state}
+        </if>
+    </select>
+
+    <update id="updateState">
+        UPDATE t_service_info
+        SET state = #{state}
+        WHERE service_id = #{serviceId};
+    </update>
+
+    <update id="updateServiceInfo">
+        update t_service_info set service_type_no = #{serviceType.serviceTypeNo},
+        service_name = #{serviceName}, service_price = #{servicePrice}
+        where service_id = #{serviceID}
+    </update>
+
+    <select id="listByBusinessNoAndType" resultMap="serviceInfo">
+        SELECT *
+        FROM t_service_info a
+                 LEFT JOIN t_service_type b on a.service_type_no = b.service_type_no
+                 LEFT JOIN t_business_business c ON a.business_no = c.business_no
+                 LEFT JOIN t_service_price d ON a.service_id = d.service_id
+                 LEFT JOIN t_common_pet_sort f ON d.pet_sort_no = f.pet_sort_no
+                 LEFT JOIN t_common_pet_hair h ON d.hair_length = h.hair_length
+        WHERE a.business_no = #{businessNo}
+          AND a.service_type_no = #{typeNo};
+    </select>
+
+    <select id="getByServiceId" resultMap="serviceInfo">
+        SELECT *
+        FROM t_service_info WHERE service_id = #{serviceId};
+    </select>
+</mapper>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetMapper">
+    <resultMap id="basePet" type="com.yangwang.application.pet.market.model.common.Pet">
+        <id column="pet_no" property="petNo"/>
+        <result column="pet_sort_no" property="petSort.petSortNo"/>
+        <result column="pet_genre_no" property="petGenre.petGenreNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="groupon" property="groupon"/>
+        <result column="source_pet_no" property="sourcePetNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_common_pet (`pet_no`, `pet_name`, `pet_sort_no`, `pet_genre_no`, `business_no`, `pet_sex`,
+                                  `pet_sterilization`, `pet_birthday`, `pet_unique_code`, `retail_price`,
+                                  `market_price`, `commission`, `commission_amount`, `create_date`, `create_time`,
+                                  `father_img`,
+                                  `father_name`, `mother_img`, `mother_name`, `pet_description`, `weight`,
+                                  `free_shipping`, `insurance`, `seven_warranty`, `labels`, `collection_qty`,
+                                  `evaluation_qty`, `favorable_rate`,
+                                  `pet_state`, `sales_volume`, `base_price`, `pet_img`, `groupon`,
+                                  `Issued_behalf`)
+        VALUES (#{pet.petNo}, #{pet.petName}, #{pet.petSort.petSortNo},
+                #{pet.petGenre.petGenreNo}, #{pet.business.businessNo}, #{pet.petSex}, #{pet.petSterilization},
+                #{pet.petBirthday}, #{pet.petUniqueCode}, #{pet.retailPrice}, #{pet.marketPrice}, #{pet.commission},
+                #{pet.commissionAmount},
+                #{pet.createDate}, #{pet.createTime}, #{pet.fatherImg}, #{pet.fatherName}, #{pet.motherImg},
+                #{pet.motherName}, #{pet.petDescription}, #{pet.weight}, #{pet.freeShipping}, #{pet.insurance},
+                #{pet.sevenWarranty}, #{pet.labels}, #{pet.collectionQty}, #{pet.evaluationQty}, #{pet.favorableRate},
+                #{pet.petState}, #{pet.salesVolume}, #{pet.basePrice}, #{pet.petImg}, #{pet.groupon},
+                #{pet.IssuedBehalf});
+    </insert>
+
+    <update id="update">
+        UPDATE t_common_pet
+        <set>
+            <if test="pet.petName != null">
+                `pet_name` = #{pet.petName},
+            </if>
+            <if test="pet.petSort != null and pet.petSort.petSortNo != null">
+                `pet_sort_no` = #{pet.petSort.petSortNo},
+            </if>
+            <if test="pet.petGenre != null and pet.petGenre.petGenreNo != null">
+                `pet_genre_no` = #{pet.petGenre.petGenreNo},
+            </if>
+            <if test="pet.business != null and pet.business.businessNo != null">
+                `business_no` = #{pet.business.businessNo},
+            </if>
+            <if test="pet.petSex != null">
+                `pet_sex` = #{pet.petSex},
+            </if>
+            <if test="pet.petSterilization != null">
+                `pet_sterilization` = #{pet.petSterilization},
+            </if>
+            <if test="pet.petBirthday != null">
+                `pet_birthday` = #{pet.petBirthday},
+            </if>
+            <if test="pet.petUniqueCode != null">
+                `pet_unique_code` = #{pet.petUniqueCode},
+            </if>
+            <if test="pet.retailPrice != null">
+                `retail_price` = #{pet.retailPrice},
+            </if>
+            <if test="pet.marketPrice != null">
+                `market_price` = #{pet.marketPrice},
+            </if>
+            <if test="pet.basePrice != null">
+                `base_price` = #{pet.basePrice},
+            </if>
+            <if test="pet.commission != null">
+                `commission` = #{pet.commission},
+            </if>
+            <if test="pet.commissionAmount != null">
+                `commission_amount` = #{pet.commissionAmount},
+            </if>
+            <if test="pet.createDate != null">
+                `create_date` = #{pet.createDate},
+            </if>
+            <if test="pet.createTime != null">
+                `create_time` = #{pet.createTime},
+            </if>
+            <if test="pet.fatherImg != null">
+                `father_img` = #{pet.fatherImg},
+            </if>
+            <if test="pet.fatherName != null">
+                `father_name` = #{pet.fatherName},
+            </if>
+            <if test="pet.motherImg != null">
+                `mother_img` = #{pet.motherImg},
+            </if>
+            <if test="pet.weight != null">
+                `weight` = #{pet.weight},
+            </if>
+            <if test="pet.freeShipping != null">
+                `free_shipping` = #{pet.freeShipping},
+            </if>
+            <if test="pet.insurance != null">
+                `insurance` = #{pet.insurance},
+            </if>
+            <if test="pet.sevenWarranty != null">
+                `seven_warranty` = #{pet.sevenWarranty},
+            </if>
+            <if test="pet.labels != null">
+                `labels` = #{pet.labels},
+            </if>
+            <if test="pet.petImg != null">
+                `pet_img` = #{pet.petImg},
+            </if>
+            <if test="pet.groupon != null">
+                `groupon` = #{pet.groupon}
+            </if>
+        </set>
+        WHERE pet_no = #{pet.petNo};
+    </update>
+
+    <update id="updateState">
+        UPDATE t_common_pet
+        SET `pet_state` = #{state}
+        WHERE `pet_no` = #{petNo};
+    </update>
+
+    <update id="addCollectionQty">
+        UPDATE t_common_pet
+        SET collection_qty = collection_qty + #{collectionQty}
+        WHERE pet_no = #{petNo};
+    </update>
+
+    <update id="addEvaluationQty">
+        UPDATE t_common_pet
+        SET evaluation_qty = evaluation_qty + #{evaluation}
+        WHERE pet_no = #{petNo};
+    </update>
+
+    <update id="updateFavorableRate">
+        UPDATE t_common_pet
+        SET favorable_rate = #{favorableRate}
+        WHERE pet_no = #{petNo};
+    </update>
+
+    <update id="addSalesVolume">
+        UPDATE t_common_pet
+        SET sales_volume = sales_volume + #{salesVolume}
+        WHERE pet_no = #{petNo};
+    </update>
+
+    <update id="updatePetIsSell">
+        UPDATE t_common_pet
+        SET pet_isSell = #{petIsSell}
+        where pet_no = #{petNo};
+    </update>
+
+    <select id="get" resultMap="basePet">
+        SELECT pet_no,
+               pet_name,
+               pet_sort_no,
+               pet_genre_no,
+               business_no,
+               pet_sex,
+               pet_sterilization,
+               pet_birthday,
+               pet_unique_code,
+               retail_price,
+               market_price,
+               commission,
+               commission_amount,
+               create_date,
+               create_time,
+               father_img,
+               father_name,
+               mother_img,
+               mother_name,
+               pet_description,
+               weight,
+               free_shipping,
+               insurance,
+               seven_warranty,
+               labels,
+               collection_qty,
+               evaluation_qty,
+               favorable_rate,
+               pet_state,
+               power,
+               sales_volume,
+               base_price,
+               pet_img,
+               groupon,
+               pet_isSell
+        FROM t_common_pet
+        WHERE pet_no = #{petNo};
+    </select>
+
+</mapper>

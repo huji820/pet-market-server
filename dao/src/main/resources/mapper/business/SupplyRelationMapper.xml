@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.SupplyRelationMapper">
+
+    <resultMap id="result" type="com.yangwang.application.pet.market.model.business.SupplyRelation">
+        <id column="relation_no" property="relationNo"/>
+        <result column="manufactor" property="manufactor.businessNo"/>
+        <collection property="subWarehouse" ofType="com.yangwang.application.pet.market.model.business.Business">
+            <id column="business_no" property="businessNo"/>
+            <result column="business_name" property="businessName"/>
+            <result column="register_time" property="registerTime"/>
+            <result column="start_hours" property="startHours"/>
+            <result column="end_hours" property="endHours"/>
+            <result column="contact" property="contact"/>
+            <result column="contact_phone" property="contactPhone"/>
+            <result column="password" property="password"/>
+            <result column="describe" property="describe"/>
+            <result column="pay_bond" property="payBond"/>
+            <result column="auth_type" property="authType"/>
+            <result column="fans" property="fans"/>
+            <result column="follow_qty" property="followQty"/>
+            <result column="longitude" property="longitude"/>
+            <result column="latitude" property="latitude"/>
+            <result column="province" property="province"/>
+            <result column="city" property="city"/>
+            <result column="area" property="area"/>
+            <result column="detail_address" property="detailAddress"/>
+            <result column="head_img" property="headImg"/>
+            <result column="state" property="state"/>
+            <result column="unionId" property="unionId"/>
+            <result column="power" property="power"/>
+            <result column="complete" property="complete"/>
+            <result column="credit" property="credit"/>
+            <result column="level" property="level"/>
+            <result column="is_have_service" property="haveService"/>
+            <result column="balance" property="balance"/>
+            <result column="customer_no" property="customerNo"/>
+            <result column="we_chat_img" property="weChatImg"/>
+            <result column="shop_img" property="shopImages"/>
+            <result column="openid" property="openid"/>
+        </collection>
+    </resultMap>
+    
+    <insert id="addSubWarehouse">
+        insert into t_business_supply_relation (
+          `manufactor`,
+          `sub_warehouse`
+        ) values (
+          #{manufactorNo},
+          #{businessNo}
+        )
+    </insert>
+
+    <select id="listManufactor" resultType="string">
+        select `manufactor` from t_business_supply_relation
+        where `sub_warehouse` = #{businessNo};
+    </select>
+    
+    <select id="listSubWarehouse" resultType="string">
+        select `sub_warehouse` from t_business_supply_relation
+        where `manufactor` = #{businessNo};
+    </select>
+</mapper>

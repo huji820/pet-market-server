@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.coupon.CouponMapper">
+    <resultMap id="baseCoupon" type="com.yangwang.application.pet.market.model.common.coupon.Coupon">
+        <id column="coupon_id" property="couponID"/>
+        <result column="used" property="used"/>
+        <result column="invalid" property="invalid"/>
+        <result column="verify_code" property="verifyCode"/>
+        <result column="business_no" property="business.businessNo"/>
+        <association property="couponType"
+                     javaType="com.yangwang.application.pet.market.model.common.coupon.CouponType">
+            <id column="coupon_type_id" property="couponTypeID"/>
+            <result column="title" property="title"/>
+            <result column="preferential_type" property="preferentialType"/>
+            <result column="discount" property="discount"/>
+            <result column="value" property="value"/>
+            <result column="receive_id" property="receiveId"/>
+            <result column="receive_num" property="receiveNum"/>
+            <result column="coupon_credit" property="couponCredit"/>
+            <result column="expire_notice" property="expireNotice"/>
+            <result column="atLeast" property="atLeast"/>
+            <result column="least_amount" property="leastAmount"/>
+            <result column="forbid_preference" property="forbidPreference"/>
+            <result column="quota" property="quota"/>
+            <result column="discount" property="discount"/>
+            <result column="range_type" property="rangeType"/>
+            <result column="business_type" property="businessType"/>
+            <result column="specify_item_ids" property="specifyItemIds"/>
+            <result column="specify_service_ids" property="specifyServiceIds"/>
+        </association>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_common_coupon (coupon_type_id,
+                                     business_no,
+                                     used,
+                                     invalid,
+                                     verify_code)
+        VALUES (#{coupon.couponType.couponTypeID},
+                #{coupon.business.businessNo},
+                #{coupon.used},
+                #{coupon.invalid},
+                #{coupon.verifyCode});
+    </insert>
+
+    <select id="get" resultMap="baseCoupon">
+        SELECT a.coupon_id,
+               a.business_no,
+               a.used,
+               a.invalid,
+               a.verify_code,
+               b.coupon_type_id,
+               b.title,
+               b.preferential_type,
+               b.discount,
+               b.value,
+               b.receive_id,
+               b.receive_num,
+               b.coupon_credit,
+               b.expire_notice,
+               b.atLeast,
+               b.least_amount,
+               b.forbid_preference,
+               b.quota,
+               b.range_type,
+               b.business_type,
+               b.specify_item_ids,
+               b.specify_service_ids
+        FROM t_common_coupon a
+                 LEFT JOIN t_common_coupon_type b ON a.coupon_type_id = b.coupon_type_id
+        WHERE coupon_id = #{couponId}
+        LIMIT 1;
+    </select>
+
+    <select id="getByVerifyCode" resultMap="baseCoupon">
+        SELECT a.coupon_id,
+               a.business_no,
+               a.used,
+               a.invalid,
+               a.verify_code,
+               b.coupon_type_id,
+               b.title,
+               b.preferential_type,
+               b.discount,
+               b.value,
+               b.receive_id,
+               b.receive_num,
+               b.coupon_credit,
+               b.expire_notice,
+               b.atLeast,
+               b.least_amount,
+               b.forbid_preference,
+               b.quota,
+               b.range_type,
+               b.business_type,
+               b.specify_item_ids,
+               b.specify_service_ids
+        FROM t_common_coupon a
+                 LEFT JOIN t_common_coupon_type b ON a.coupon_type_id = b.coupon_type_id
+        WHERE verify_code = #{verifyCode};
+    </select>
+
+    <update id="updateUsedState">
+        UPDATE t_common_coupon
+        SET used = #{usedState}
+        WHERE coupon_id = #{couponId};
+    </update>
+
+    <update id="updateInvalidState">
+        UPDATE t_common_coupon
+        SET invalid = #{invalidState}
+        WHERE coupon_id = #{couponId};
+    </update>
+</mapper>

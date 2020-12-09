@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.BusinessBalanceFlowMapper">
+    <resultMap id="baseBusinessBalanceFlow"
+               type="com.yangwang.application.pet.market.model.business.BusinessBalanceFlow">
+        <result column="business_no" property="business.businessNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_business_balance_flow (`business_no`, `date_time`, `flow_type`, `flow_amount`, `balance`,
+                                             `bill_no`,
+                                             `link_no`)
+        VALUES (#{businessBalanceFlow.business.businessNo},
+                #{businessBalanceFlow.dateTime},
+                #{businessBalanceFlow.flowType},
+                #{businessBalanceFlow.flowAmount},
+                #{businessBalanceFlow.balance},
+                #{businessBalanceFlow.billNo},
+                #{businessBalanceFlow.linkNo});
+    </insert>
+
+    <select id="listByStationNo" resultMap="baseBusinessBalanceFlow">
+        SELECT * FROM t_business_balance_flow
+        WHERE business_no = #{businessNo}
+        <if test="limit != 0">
+            LIMIT #{offset} , #{limit};
+        </if>
+    </select>
+
+</mapper>

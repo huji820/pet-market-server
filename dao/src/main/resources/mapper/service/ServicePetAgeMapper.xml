@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServicePetAgeMapper">
+    <select id="listServicePetAge"
+            resultType="com.yangwang.application.pet.market.model.service.ServicePrice">
+        select *
+        from t_service_price
+        where service_id = #{serviceID}
+          and age_type is not null
+    </select>
+</mapper>

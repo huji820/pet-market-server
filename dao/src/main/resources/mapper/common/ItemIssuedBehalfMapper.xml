@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemIssuedBehalfMapper">
+
+    <resultMap id="baseItem" type="com.yangwang.application.pet.market.model.common.Item">
+        <id column="item_no" property="itemNo"/>
+        <result column="item_name" property="itemName"/>
+        <result column="item_profile" property="itemProfile"/>
+        <result column="pet_sort_no" property="petSort.petSortNo"/>
+        <result column="pet_sort_name" property="petSort.petSortName"/>
+        <result column="bar_code" property="barCode"/>
+        <result column="item_brand_no" property="itemBrand.itemBrandNo"/>
+        <result column="item_brand_name" property="itemBrand.itemBrandName"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="business_name" property="business.businessName"/>
+        <result column="start_hours" property="business.startHours"/>
+        <result column="end_hours" property="business.endHours"/>
+        <result column="describe" property="business.describe"/>
+        <result column="pay_bond" property="business.payBond"/>
+        <result column="fans" property="business.fans"/>
+        <result column="auth_type" property="business.authType"/>
+        <result column="longitude" property="business.longitude"/>
+        <result column="latitude" property="business.latitude"/>
+        <result column="province" property="business.province"/>
+        <result column="city" property="business.city"/>
+        <result column="area" property="business.area"/>
+        <result column="detail_address" property="business.detailAddress"/>
+        <result column="head_img" property="business.headImg"/>
+        <result column="state" property="business.state"/>
+        <result column="follow_qty" property="business.followQty"/>
+        <result column="item_stage" property="itemStage"/>
+        <result column="group_title" property="groupTitle" />
+        <result column="gross_weight" property="grossWeight"/>
+        <result column="item_validity" property="itemValidity"/>
+        <result column="pet_genre_str" property="petGenreStr"/>
+        <result column="retail_price" property="retailPrice"/>
+        <result column="market_price" property="marketPrice"/>
+        <result column="commission" property="commission"/>
+        <result column="commission_amount" property="commissionAmount"/>
+        <result column="base_price" property="basePrice"/>
+        <result column="cover_img" property="coverImg"/>
+        <result column="item_description" property="itemDescription"/>
+        <result column="item_state" property="itemState"/>
+        <result column="free_shipping" property="freeShipping"/>
+        <result column="collection_qty" property="collectionQty"/>
+        <result column="evaluation_qty" property="evaluationQty"/>
+        <result column="favorable_rate" property="favorableRate"/>
+        <result column="sales_volume" property="salesVolume"/>
+        <result column="groupon" property="groupon"/>
+        <result column="qty" property="qty"/>
+        <result column="source_item_no" property="sourceItemNo"/>
+        <result column="Issued_behalf" property="issuedBehalf"/>
+        <result column="manufactor" property="manufactor"/>
+        <result column="cost_price" property="costPrice"/>
+        <collection property="itemPacks" ofType="com.yangwang.application.pet.market.model.common.ItemPack" >
+            <id property="itemPackNo" column="item_pack_no" />
+            <result property="itemPackName" column="item_pack_name" />
+            <result property="itemPackImg" column="item_pack_img" />
+        </collection>
+
+        <collection property="itemTypes" ofType="com.yangwang.application.pet.market.model.common.ItemType" >
+            <id property="itemTypeNo" column="item_type_no" />
+            <result property="itemTypeName" column="item_type_name" />
+            <result property="itemTypeImg" column="item_type_img" />
+        </collection>
+    </resultMap>
+
+    <sql id="itemColumn">
+        a.item_no,
+        a.item_name,
+        a.item_profile,
+        a.pet_sort_no,
+        case when a.pet_sort_no = -1 then '猫狗通用' else b.pet_sort_name end pet_sort_name,
+        c.item_type_no,
+        c.item_type_name,
+        e.item_pack_no,
+        e.item_pack_name,
+        a.item_brand_no,
+        d.item_brand_name,
+        a.business_no,
+        a.groupon,
+        a.group_title,
+        a.bar_code,
+        f.business_name,
+        f.start_hours,
+        f.end_hours,
+        f.`describe`,
+        f.pay_bond,
+        f.fans,
+        f.auth_type,
+        f.longitude,
+        f.latitude,
+        f.province,
+        f.city,
+        f.area,
+        f.detail_address,
+        f.head_img,
+        f.state,
+        f.follow_qty,
+        a.item_stage,
+        a.gross_weight,
+        a.item_validity,
+        a.pet_genreStr,
+        a.retail_price,
+        a.market_price,
+        a.commission,
+        a.base_price,
+        a.cover_img,
+        a.create_date,
+        a.create_time,
+        a.item_description,
+        a.item_state,
+        a.free_shipping,
+        a.collection_qty,
+        a.evaluation_qty,
+        a.favorable_rate,
+        a.sales_volume,
+        a.source_item_no,
+        a.Issued_behalf,
+        a.qty,
+        a.manufactor,
+        a.cost_price
+    </sql>
+
+    <sql id="itemLeftJoinTable">
+        LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+        LEFT JOIN t_common_item_type c ON FIND_IN_SET(c.item_type_no, a.item_type_no) > 0
+        LEFT JOIN t_common_item_brand d ON a.item_brand_no = d.item_brand_no
+        LEFT JOIN t_common_item_pack e ON FIND_IN_SET(e.item_pack_no, a.Item_pack_no) > 0
+        LEFT JOIN t_business_business f ON a.business_no = f.business_no
+    </sql>
+
+    <insert id="save">
+        <selectKey resultType="int" keyProperty="item.itemNo" order="AFTER">
+            SELECT @@IDENTITY AS item_no
+        </selectKey>
+        INSERT INTO t_common_item (
+        `item_name`,
+        `item_profile`,
+        `pet_sort_no`,
+        `item_type_no`,
+        `Item_pack_no`,
+        `item_brand_no`,
+        `business_no`,
+        `bar_code`,
+        `item_stage`,
+        `gross_weight`,
+        `item_validity`,
+        `pet_genreStr`,
+        `retail_price`,
+        `market_price`,
+        `commission`,
+        `commission_amount`,
+        `base_price`,
+        `cover_img`,
+        `create_date`,
+        `create_time`,
+        `item_description`,
+        `item_state`,
+        `free_shipping`,
+        `collection_qty`,
+        `evaluation_qty`,
+        `favorable_rate`,
+        `sales_volume`,
+        `groupon`,
+        `qty`,
+        `group_title`,
+        `source_item_no`,
+        `Issued_behalf`
+        )
+        VALUES (
+        #{item.itemName},
+        #{item.itemProfile},
+        #{item.petSort.petSortNo},
+        #{item.types},
+        #{item.packs},
+        #{item.itemBrand.itemBrandNo},
+        #{item.business.businessNo},
+        #{item.barCode},
+        #{item.itemStage},
+        #{item.grossWeight},
+        #{item.itemValidity},
+        #{item.petGenreStr},
+        #{item.retailPrice},
+        #{item.marketPrice},
+        #{item.commission},
+        #{item.commissionAmount},
+        #{item.basePrice},
+        #{item.coverImg},
+        #{item.createDate},
+        #{item.createTime},
+        #{item.itemDescription},
+        #{item.itemState},
+        #{item.freeShipping},
+        #{item.collectionQty},
+        #{item.evaluationQty},
+        #{item.favorableRate},
+        #{item.salesVolume},
+        #{item.groupon},
+        #{item.qty},
+        #{item.groupTitle},
+        #{item.sourceItemNo},
+        #{item.issuedBehalf}
+        );
+    </insert>
+
+    <select id="listByBusinessNo" resultMap="baseItem">
+        SELECT
+        <include refid="itemColumn"/>
+        FROM t_common_item a
+        <include refid="itemLeftJoinTable"/>
+        WHERE a.business_no = #{businessNo}
+        AND a.source_item_no IS NOT NULL;
+    </select>
+
+    <delete id="removeByItemNo">
+        DELETE FROM t_common_item WHERE item_no = #{itemNo};
+    </delete>
+
+    <update id="updateItemState">
+        UPDATE t_common_item
+        SET item_state = #{state}
+        WHERE source_item_no = #{sourceItemNo};
+    </update>
+
+</mapper>

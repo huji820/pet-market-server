@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper">
+    <!-- 展示列表的resultMap -->
+    <resultMap id="showPetVoMap" type="com.yangwang.application.pet.market.model.vo.PetVo">
+        <id column="pet_pet_no" property="pet.petNo"/>
+        <result column="pet_name" property="pet.petName"/>
+        <result column="pet_pet_sort_no" property="pet.petSort.petSortNo"/>
+        <result column="pet_sort_name" property="pet.petSort.petSortName"/>
+        <result column="pet_pet_genre_no" property="pet.petGenre.petGenreNo"/>
+        <result column="pet_genre_name" property="pet.petGenre.petGenreName"/>
+        <result column="city" property="pet.city"/>
+        <result column="pet_sex" property="pet.petSex"/>
+        <result column="pet_sterilization" property="pet.petSterilization"/>
+        <result column="pet_birthday" property="pet.petBirthday"/>
+        <result column="pet_unique_code" property="pet.petUniqueCode"/>
+        <result column="retail_price" property="pet.retailPrice"/>
+        <result column="market_price" property="pet.marketPrice"/>
+        <result column="commission" property="pet.commission"/>
+        <result column="commission_amount" property="pet.commissionAmount"/>
+        <result column="base_price" property="pet.basePrice"/>
+        <result column="create_date" property="pet.createDate"/>
+        <result column="create_time" property="pet.createTime"/>
+        <result column="father_img" property="pet.fatherImg"/>
+        <result column="father_name" property="pet.fatherName"/>
+        <result column="mother_img" property="pet.motherImg"/>
+        <result column="mother_name" property="pet.motherName"/>
+        <result column="pet_description" property="pet.petDescription"/>
+        <result column="weight" property="pet.weight"/>
+        <result column="free_shipping" property="pet.freeShipping"/>
+        <result column="insurance" property="pet.insurance"/>
+        <result column="seven_warranty" property="pet.sevenWarranty"/>
+        <result column="labels" property="pet.labels"/>
+        <result column="collection_qty" property="pet.collectionQty"/>
+        <result column="evaluation_qty" property="pet.evaluationQty"/>
+        <result column="favorable_rate" property="pet.favorableRate"/>
+        <result column="sales_volume" property="pet.salesVolume"/>
+        <result column="pet_state" property="pet.petState"/>
+        <result column="power" property="pet.power"/>
+        <result column="pet_img" property="pet.petImg"/>
+        <result column="groupon" property="pet.groupon"/>
+        <result column="pet_isSell" property="pet.petIsSell"/>
+        <result column="business_business_no" property="pet.business.businessNo"/>
+        <result column="business_name" property="pet.business.businessName"/>
+        <result column="register_time" property="pet.business.registerTime"/>
+        <result column="start_hours" property="pet.business.startHours"/>
+        <result column="end_hours" property="pet.business.endHours"/>
+        <result column="contact" property="pet.business.contact"/>
+        <result column="contact_phone" property="pet.business.contactPhone"/>
+        <result column="describe" property="pet.business.describe"/>
+        <result column="pay_bond" property="pet.business.payBond"/>
+        <result column="fans" property="pet.business.fans"/>
+        <result column="auth_type" property="pet.business.authType"/>
+        <result column="longitude" property="pet.business.longitude"/>
+        <result column="latitude" property="pet.business.latitude"/>
+        <result column="province" property="pet.business.province"/>
+        <result column="city" property="pet.business.city"/>
+        <result column="area" property="pet.business.area"/>
+        <result column="detail_address" property="pet.business.detailAddress"/>
+        <result column="head_img" property="pet.business.headImg"/>
+        <result column="follow_qty" property="pet.business.followQty"/>
+        <result column="complete" property="pet.business.complete"/>
+        <result column="credit" property="pet.business.credit"/>
+        <result column="we_chat_img" property="pet.business.weChatImg"/>
+    </resultMap>
+
+    <!-- 宠物详情的resultMap -->
+    <resultMap id="petVoMap" type="com.yangwang.application.pet.market.model.vo.PetVo" extends="showPetVoMap">
+
+        <collection property="petVaccineList" ofType="com.yangwang.application.pet.market.model.common.PetVaccine">
+            <id column="vaccine_no" property="vaccineNo"/>
+            <result column="vaccine_pet_no" property="pet.petNo"/>
+            <result column="vaccine_date" property="vaccineDate"/>
+            <result column="vaccine_brand_name" property="vaccineBrandName"/>
+        </collection>
+
+        <collection property="petWormKillList" ofType="com.yangwang.application.pet.market.model.common.PetWormKill">
+            <id column="worm_kill_no" property="wormKillNo"/>
+            <result column="worm_kill_pet_no" property="pet.petNo"/>
+            <result column="kill_date" property="killDate"/>
+            <result column="kill_brand_name" property="killBrandName"/>
+        </collection>
+
+        <collection property="petCoverList" ofType="com.yangwang.application.pet.market.model.common.PetCover">
+            <id column="cover_no" property="coverNo"/>
+            <result column="cover_pet_no" property="pet.petNo"/>
+            <result column="cover_address" property="coverAddress"/>
+            <result column="type" property="type"/>
+            <result column="order" property="order"/>
+        </collection>
+
+        <collection property="petGrouponList" ofType="com.yangwang.application.pet.market.model.common.PetGroupon">
+            <id column="pet_groupon_no" property="petGrouponNo"/>
+            <result column="pet_no" property="pet.petNo"/>
+            <result column="qty" property="qty"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <!-- 查询列表的SQL字段 -->
+    <sql id="showPetVoColumn">
+        a.pet_no AS pet_pet_no,
+        a.pet_name,
+        a.pet_sort_no AS pet_pet_sort_no,
+        a.pet_genre_no AS pet_pet_genre_no,
+        a.business_no AS pet_business_no,
+        a.pet_sex,
+        a.pet_sterilization,
+        a.pet_birthday,
+        a.pet_unique_code,
+        a.retail_price,
+        a.market_price,
+        a.commission,
+        a.create_date,
+        a.create_time,
+        a.father_img,
+        a.father_name,
+        a.mother_img,
+        a.mother_name,
+        a.pet_description,
+        a.weight,
+        a.free_shipping,
+        a.insurance,
+        a.seven_warranty,
+        a.labels,
+        a.collection_qty,
+        a.evaluation_qty,
+        a.favorable_rate,
+        a.pet_state,
+        a.sales_volume,
+        a.base_price,
+        a.pet_img,
+        a.groupon,
+        a.pet_isSell,
+        b.business_no AS business_business_no,
+        b.business_name,
+        b.register_time,
+        b.start_hours,
+        b.end_hours,
+        b.contact,
+        b.contact_phone,
+        b.`describe`,
+        b.pay_bond,
+        b.fans,
+        b.auth_type,
+        b.longitude,
+        b.latitude,
+        b.province,
+        b.city,
+        b.area,
+        b.detail_address,
+        b.head_img,
+        b.follow_qty,
+        b.complete,
+        b.credit,
+        c.pet_sort_name,
+        d.pet_genre_name
+    </sql>
+
+
+    <!-- 宠物详情的查询SQL字段 -->
+    <sql id="petVoColumn">
+        a.pet_no AS pet_pet_no,
+        a.pet_name,
+        a.pet_sort_no AS pet_pet_sort_no,
+        a.pet_genre_no AS pet_pet_genre_no,
+        a.business_no AS pet_business_no,
+        a.pet_sex,
+        a.pet_sterilization,
+        a.pet_birthday,
+        a.pet_unique_code,
+        a.retail_price,
+        a.market_price,
+        a.commission,
+        a.create_date,
+        a.create_time,
+        a.father_img,
+        a.father_name,
+        a.mother_img,
+        a.mother_name,
+        a.pet_description,
+        a.weight,
+        a.free_shipping,
+        a.insurance,
+        a.seven_warranty,
+        a.labels,
+        a.collection_qty,
+        a.evaluation_qty,
+        a.favorable_rate,
+        a.pet_state,
+        a.sales_volume,
+        a.base_price,
+        a.pet_img,
+        a.groupon,
+        a.pet_isSell,
+        b.business_no AS business_business_no,
+        b.business_name,
+        b.register_time,
+        b.start_hours,
+        b.end_hours,
+        b.contact,
+        b.contact_phone,
+        b.`describe`,
+        b.pay_bond,
+        b.fans,
+        b.auth_type,
+        b.longitude,
+        b.latitude,
+        b.province,
+        b.city,
+        b.area,
+        b.detail_address,
+        b.head_img,
+        b.follow_qty,
+        b.complete,
+        b.credit,
+        b.we_chat_img,
+        c.pet_sort_name,
+        d.pet_genre_name,
+        e.cover_no,
+        e.pet_no AS cover_pet_no,
+        e.cover_address,
+        e.type,
+        e.`order`,
+        f.vaccine_no,
+        f.pet_no AS vaccine_pet_no,
+        f.vaccine_date,
+        f.vaccine_brand_name,
+        g.worm_kill_no,
+        g.pet_no AS worm_kill_pet_no,
+        g.kill_date,
+        g.kill_brand_name,
+        h.pet_groupon_no,
+        h.pet_no AS groupon_pet_no,
+        h.qty,
+        h.price
+    </sql>
+
+    <!-- 查询宠物列表的左连接查询表 -->
+    <sql id="showPetVoLeftJoinTable">
+        LEFT JOIN t_business_business b ON a.business_no = b.business_no
+        LEFT JOIN t_common_pet_sort c ON a.pet_sort_no = c.pet_sort_no
+        LEFT JOIN t_common_pet_genre d ON a.pet_genre_no = d.pet_genre_no
+    </sql>
+
+    <!-- 查询宠物详情的SQL左连接表 -->
+    <sql id="petVoLeftJoinTable">
+        LEFT JOIN t_business_business b ON a.business_no = b.business_no
+        LEFT JOIN t_common_pet_sort c ON a.pet_sort_no = c.pet_sort_no
+        LEFT JOIN t_common_pet_genre d on a.pet_genre_no = d.pet_genre_no
+        LEFT JOIN t_common_pet_cover e ON a.pet_no = e.pet_no
+        LEFT JOIN t_common_pet_vaccine f ON a.pet_no = f.pet_no
+        LEFT JOIN t_common_pet_worm_kill g ON a.pet_no = g.pet_no
+        LEFT JOIN t_common_pet_groupon h ON a.pet_no = h.pet_no
+    </sql>
+
+    <select id="get" resultMap="petVoMap">
+        SELECT
+        <include refid="petVoColumn"/>
+        FROM t_common_pet a
+        <include refid="petVoLeftJoinTable"/>
+        WHERE a.pet_no = #{petNo};
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.QueryBusinessMapper">
+    <select id="listByQueryParam" resultType="com.yangwang.application.pet.market.model.business.Business">
+        SELECT business_no,
+               business_name,
+               register_time,
+               start_hours,
+               end_hours,
+               contact,
+               contact_phone,
+               `describe`,
+               pay_bond,
+               fans,
+               auth_type,
+               longitude,
+               latitude,
+               province,
+               city,
+               area,
+               detail_address,
+               head_img,
+               state,
+               unionid,
+               power,
+               follow_qty,
+               complete,
+               credit,
+               level,
+               is_have_service
+        FROM t_business_business
+        WHERE business_name LIKE CONCAT('%', #{queryQueryListParam.keyWord}, '%')
+        LIMIT #{queryQueryListParam.offset} , #{queryQueryListParam.limit};
+    </select>
+</mapper>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.ReceivingAddressMapper">
+    <insert id="save">
+        INSERT INTO t_common_receving_address (business_no, contacts, phone, province, city, county,
+                                               detailed_address, longitude, latitude, is_default)
+        VALUES (#{receivingAddress.business.businessNo},
+                #{receivingAddress.contacts},
+                #{receivingAddress.phone},
+                #{receivingAddress.province},
+                #{receivingAddress.city},
+                #{receivingAddress.county},
+                #{receivingAddress.detailedAddress},
+                #{receivingAddress.longitude},
+                #{receivingAddress.latitude},
+                #{receivingAddress.isDefault});
+    </insert>
+
+    <select id="get" resultType="com.yangwang.application.pet.market.model.common.ReceivingAddress">
+        SELECT receiving_no,
+               business_no,
+               contacts,
+               phone,
+               province,
+               city,
+               county,
+               detailed_address,
+               longitude,
+               latitude,
+               is_default
+        FROM t_common_receving_address
+        WHERE receiving_no = #{receivingNo};
+    </select>
+
+    <select id="listByBusinessNo" resultType="com.yangwang.application.pet.market.model.common.ReceivingAddress">
+        SELECT receiving_no,
+               business_no,
+               contacts,
+               phone,
+               province,
+               city,
+               county,
+               detailed_address,
+               longitude,
+               latitude,
+               is_default
+        FROM t_common_receving_address
+        WHERE business_no = #{businessNo};
+    </select>
+
+    <update id="update">
+        UPDATE t_common_receving_address
+        <set>
+            <if test="receivingAddress.contacts != null">
+                contacts = #{receivingAddress.contacts},
+            </if>
+            <if test="receivingAddress.phone!= null">
+                phone = #{receivingAddress.phone},
+            </if>
+            <if test="receivingAddress.province!= null">
+                province = #{receivingAddress.province},
+            </if>
+            <if test="receivingAddress.city!= null">
+                city = #{receivingAddress.city},
+            </if>
+            <if test="receivingAddress.county!= null">
+                county = #{receivingAddress.county},
+            </if>
+            <if test="receivingAddress.detailedAddress !=null">
+                detailed_address = #{receivingAddress.detailedAddress},
+            </if>
+            <if test="receivingAddress.longitude != null">
+                longitude = #{receivingAddress.longitud},
+            </if>
+            <if test="receivingAddress.latitude!= null">
+                latitude = #{receivingAddress.latitude},
+            </if>
+            <if test="receivingAddress.isDefault!= null">
+                is_default = #{receivingAddress.isDefault}
+            </if>
+        </set>
+        WHERE receiving_no = #{receivingAddress.receivingNo};
+    </update>
+
+    <update id="updateDefault">
+        UPDATE t_common_receving_address
+        SET is_default = 1
+        WHERE business_no = #{businessNo}
+          AND receiving_no = #{receivingNo};
+    </update>
+
+    <update id="updateAllToNoDefault">
+        UPDATE t_common_receving_address
+        SET is_default = 0
+        WHERE business_no = #{businessNo};
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM t_common_receving_address
+        WHERE receiving_no = #{receivingNo};
+    </delete>
+
+    <select id="getDefault" resultType="com.yangwang.application.pet.market.model.common.ReceivingAddress">
+        SELECT receiving_no,
+               business_no,
+               contacts,
+               phone,
+               province,
+               city,
+               county,
+               detailed_address,
+               longitude,
+               latitude,
+               is_default
+        FROM t_common_receving_address
+        WHERE business_no = #{businessNo}
+          AND is_default = 1
+        LIMIT 1;
+    </select>
+</mapper>

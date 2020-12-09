@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetListMapper">
+    <select id="listBusinessPet"
+            resultMap="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoMap">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoColumn"/>
+        FROM t_common_pet a
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoLeftJoinTable"/>
+        JOIN (
+        SELECT pet.pet_no
+        FROM t_common_pet pet
+        JOIN t_business_business business ON pet.business_no = business.business_no
+        <where>
+            business.business_no = #{queryPetBusinessListParam.businessNo}
+            <if test="queryPetBusinessListParam.petNo != null">
+                AND pet.pet_no = #{queryPetBusinessListParam.petNo}
+            </if>
+            <if test="queryPetBusinessListParam.petState != null">
+                AND pet.pet_state = #{queryPetBusinessListParam.petState}
+            </if>
+        </where>
+        ORDER BY CONCAT(pet.create_date,' ',pet.create_time) DESC
+        LIMIT #{queryPetBusinessListParam.offset} , #{queryPetBusinessListParam.limit}
+        ) filter ON a.pet_no = filter.pet_no
+    </select>
+
+    <select id="listMarketPet"
+            resultMap="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoMap">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoColumn"/>
+        FROM t_common_pet a
+        <include refid="com.yangwang.application.pet.market.dao.market.pet.PetDetailMapper.showPetVoLeftJoinTable"/>
+        JOIN (
+        SELECT pet.pet_no
+        FROM t_common_pet pet
+        JOIN t_business_business business ON pet.business_no = business.business_no
+        <where>
+            pet.pet_state = '${@com.yangwang.application.pet.market.common.enums.OnSaleStateEnum@FOR_SALE.getType()}'
+            AND
+            business.state = '${@com.yangwang.application.pet.market.common.enums.BusinessStateEnum@NORMAL.getType()}'
+            AND
+            pet.groupon = 0
+            <if test="queryPetMarketListParam.city != null">
+                AND business.city = #{queryPetMarketListParam.city}
+            </if>
+            <if test="queryPetMarketListParam.startMoney != null">
+                AND pet.retail_price &gt;= #{queryPetMarketListParam.startMoney}
+            </if>
+            <if test="queryPetMarketListParam.endMoney != null">
+                AND pet.retail_price &lt; #{queryPetMarketListParam.endMoney}
+            </if>
+            <if test="queryPetMarketListParam.sex != null">
+                AND pet.pet_sex = #{queryPetMarketListParam.sex}
+            </if>
+            <if test="queryPetMarketListParam.petSortNo != null">
+                AND pet.pet_sort_no = #{queryPetMarketListParam.petSortNo}
+            </if>
+            <if test="queryPetMarketListParam.petGenreNo != null">
+                AND pet.pet_genre_no = #{queryPetMarketListParam.petGenreNo}
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(queryPetMarketListParam.searchKey)">
+                AND pet.pet_name LIKE CONCAT('%',#{queryPetMarketListParam.searchKey},'%')
+            </if>
+        </where>
+        ORDER BY pet.power DESC
+        LIMIT #{queryPetMarketListParam.offset} , #{queryPetMarketListParam.limit}
+        ) filter ON a.pet_no = filter.pet_no;
+    </select>
+</mapper>

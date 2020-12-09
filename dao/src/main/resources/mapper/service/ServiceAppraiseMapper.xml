@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServiceAppraiseMapper">
+    <resultMap id="baseServiceAppraise" type="com.yangwang.application.pet.market.model.service.ServiceAppraise">
+        <id column="appraise_no" property="appraiseNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="order_no" property="serviceOrder.orderNo"/>
+        <result column="service_id" property="serviceOrder.service.serviceID"/>
+        <result column="praise_degree" property="praiseDegree"/>
+        <result column="content" property="content"/>
+        <result column="appraise_date" property="appraiseDate"/>
+        <result column="evaluated_business_no" property="evaluatedBusiness.businessNo"/>
+    </resultMap>
+
+    <insert id="save">
+        <selectKey order="AFTER" keyProperty="appraiseNo" resultType="int">
+            SELECT @@IDENTITY AS appraise_no
+        </selectKey>
+        INSERT INTO t_market_service_appraise (business_no,
+        order_no,
+        service_id,
+        praise_degree,
+        content,
+        appraise_date,
+        evaluated_business_no)
+        VALUES (#{business.businessNo},
+        #{serviceOrder.orderNo},
+        #{service.serviceID},
+        #{praiseDegree},
+        #{content},
+        substring(now(), 1, 10),
+        #{evaluatedBusiness.businessNo});
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_market_service_appraise
+        WHERE appraise_no = #{serviceAppraiseNo};
+    </delete>
+
+    <select id="getByAppraise" resultMap="baseServiceAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               service_id,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_service_appraise
+        WHERE order_no = #{serviceOrder.orderNo}
+          AND business_no = #{business.businessNo}
+    </select>
+
+    <select id="get" resultMap="baseServiceAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               service_id,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_service_appraise
+        WHERE appraise_no = #{serviceAppraiseNo};
+    </select>
+
+    <select id="countByServiceId" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_service_appraise
+        WHERE service_id = #{serviceId};
+    </select>
+
+    <select id="countByServiceNoAndUpPraiseDegree" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_service_appraise
+        WHERE service_id = #{serviceId}
+          AND praise_degree >= #{praiseDegree}
+    </select>
+</mapper>

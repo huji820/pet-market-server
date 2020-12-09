@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetGrouponMapper">
+    <insert id="save">
+        INSERT INTO t_common_pet_groupon (pet_no,
+                                          qty,
+                                          price)
+        VALUES (#{petGroupon.pet.petNo},
+                #{petGroupon.qty},
+                #{petGroupon.price});
+    </insert>
+
+    <insert id="saveList">
+        INSERT INTO t_common_pet_groupon (
+        pet_no,
+        qty,
+        price)
+        VALUES
+        <foreach collection="petGrouponList" item="petGroupon" separator="," close=";">
+            (#{petGroupon.pet.petNo},
+            #{petGroupon.qty},
+            #{petGroupon.price})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPetNo">
+        DELETE
+        FROM t_common_pet_groupon
+        WHERE pet_no = #{petNo};
+    </delete>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemCoverMapper">
+    <insert id="saveList">
+        INSERT INTO t_common_item_cover (item_no, cover_address, type, `order`) VALUES
+        <foreach collection="itemCoverList" item="itemCover" separator="," close=";">
+            (#{itemCover.item.itemNo},#{itemCover.coverAddress},#{itemCover.type},#{itemCover.order})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByItemNo">
+        DELETE
+        FROM t_common_item_cover
+        WHERE item_no = #{itemNo};
+    </delete>
+</mapper>

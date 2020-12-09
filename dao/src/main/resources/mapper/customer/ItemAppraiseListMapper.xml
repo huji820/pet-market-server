@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemAppraiseListMapper">
+    <resultMap id="itemAppraiseVoResultMap" type="com.yangwang.application.pet.market.model.vo.ItemAppraiseVo">
+        <id column="appraise_no" property="itemAppraise.appraiseNo"/>
+        <result column="business_no" property="itemAppraise.business.businessNo"/>
+        <result column="business_name" property="itemAppraise.business.businessName"/>
+        <result column="head_img" property="itemAppraise.business.headImg"/>
+        <result column="evaluated_business_no" property="itemAppraise.evaluatedBusiness.businessNo"/>
+        <result column="evaluated_business_name" property="itemAppraise.evaluatedBusiness.businessName"/>
+        <result column="evaluated_head_img" property="itemAppraise.evaluatedBusiness.headImg"/>
+        <result column="order_no" property="itemAppraise.itemOrder.orderNo"/>
+        <result column="item_no" property="itemAppraise.item.itemNo"/>
+        <result column="praise_degree" property="itemAppraise.praiseDegree"/>
+        <result column="content" property="itemAppraise.content"/>
+        <result column="appraise_date" property="itemAppraise.appraiseDate"/>
+        <result column="evaluated_business_no" property="itemAppraise.evaluatedBusiness.businessNo"/>
+        <collection property="itemAppraiseImgList"
+                    ofType="com.yangwang.application.pet.market.model.market.ItemAppraiseImg">
+            <id column="appraise_img_no" property="appraiseImgNo"/>
+            <result column="appraise_img" property="imgAddress"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="listByParam" resultMap="itemAppraiseVoResultMap">
+        SELECT item_appraise.appraise_no,
+        item_appraise.business_no,
+        item_appraise.order_no,
+        item_appraise.item_no,
+        item_appraise.praise_degree,
+        item_appraise.content,
+        item_appraise.appraise_date,
+        item_appraise.evaluated_business_no,
+        item_appraise_img.appraise_img_no,
+        item_appraise_img.appraise_img,
+        business.business_name,
+        business.head_img,
+        evaluated_business.business_name AS evaluated_busines_name,
+        evaluated_business.head_img AS evaluated_head_img
+        FROM t_market_item_appraise item_appraise
+        LEFT JOIN t_market_item_appraise_img item_appraise_img ON item_appraise.appraise_no =
+        item_appraise_img.appraise_no
+        LEFT JOIN t_business_business business ON item_appraise.business_no = business.business_no
+        LEFT JOIN t_business_business evaluated_business ON item_appraise.business_no = evaluated_business.business_no
+        JOIN
+        (
+        SELECT appraise_no
+        FROM t_market_item_appraise
+        <where>
+            <if test="queryItemAppraiseListParam.itemNo != null">
+                AND item_no = #{queryItemAppraiseListParam.itemNo}
+            </if>
+            <if test="queryItemAppraiseListParam.businessNo != null">
+                AND business_no = #{queryItemAppraiseListParam.businessNo}
+            </if>
+            <if test="queryItemAppraiseListParam.evaluatedBusinessNo != null">
+                AND evaluated_business_no = #{queryItemAppraiseListParam.evaluatedBusinessNo}
+            </if>
+        </where>
+        ORDER BY t_market_item_appraise.appraise_date DESC
+        LIMIT #{queryItemAppraiseListParam.offset} , #{queryItemAppraiseListParam.limit}
+        ) filter ON item_appraise.appraise_no = filter.appraise_no
+    </select>
+</mapper>

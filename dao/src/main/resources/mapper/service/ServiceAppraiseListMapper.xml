@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServiceAppraiseListMapper">
+
+    <resultMap id="serviceAppraiseVoResultMap" type="com.yangwang.application.pet.market.model.vo.ServiceAppraiseVo">
+        <id column="appraise_no" property="serviceAppraise.appraiseNo"/>
+        <result column="business_no" property="serviceAppraise.business.businessNo"/>
+        <result column="business_name" property="serviceAppraise.business.businessName"/>
+        <result column="head_img" property="serviceAppraise.business.headImg"/>
+        <result column="evaluated_business_no" property="serviceAppraise.evaluatedBusiness.businessNo"/>
+        <result column="evaluated_business_name" property="serviceAppraise.evaluatedBusiness.businessName"/>
+        <result column="evaluated_head_img" property="serviceAppraise.evaluatedBusiness.headImg"/>
+        <result column="order_no" property="serviceAppraise.serviceOrder.orderNo"/>
+        <result column="service_id" property="serviceAppraise.service.serviceID"/>
+        <result column="praise_degree" property="serviceAppraise.praiseDegree"/>
+        <result column="content" property="serviceAppraise.content"/>
+        <result column="appraise_date" property="serviceAppraise.appraiseDate"/>
+        <result column="evaluated_business_no" property="serviceAppraise.evaluatedBusiness.businessNo"/>
+        <collection property="serviceAppraiseImgList"
+                    ofType="com.yangwang.application.pet.market.model.service.ServiceAppraiseImg">
+            <id column="appraise_img_no" property="appraiseImgNo"/>
+            <result column="appraise_img" property="imgAddress"/>
+        </collection>
+    </resultMap>
+
+    <select id="listByParam" resultMap="serviceAppraiseVoResultMap">
+        SELECT service_appraise.appraise_no,
+        service_appraise.business_no,
+        service_appraise.order_no,
+        service_appraise.service_id,
+        service_appraise.praise_degree,
+        service_appraise.content,
+        service_appraise.appraise_date,
+        service_appraise.evaluated_business_no,
+        service_appraise_img.appraise_img_no,
+        service_appraise_img.appraise_img,
+        business.business_name,
+        business.head_img,
+        evaluated_business.business_name AS evaluated_busines_name,
+        evaluated_business.head_img AS evaluated_head_img
+        FROM t_market_service_appraise service_appraise
+        LEFT JOIN t_market_service_appraise_img service_appraise_img ON service_appraise.appraise_no = service_appraise_img.appraise_no
+        LEFT JOIN t_business_business business ON service_appraise.business_no = business.business_no
+        LEFT JOIN t_business_business evaluated_business ON service_appraise.business_no = evaluated_business.business_no
+        JOIN
+        (
+        SELECT appraise_no
+        FROM t_market_service_appraise
+        <where>
+            <if test="queryServiceAppraiseListParam.serviceId != null">
+                AND service_id = #{queryServiceAppraiseListParam.serviceId}
+            </if>
+            <if test="queryServiceAppraiseListParam.businessNo != null">
+                AND business_no = #{queryServiceAppraiseListParam.businessNo}
+            </if>
+            <if test="queryServiceAppraiseListParam.evaluatedBusinessNo != null">
+                AND evaluated_business_no = #{queryServiceAppraiseListParam.evaluatedBusinessNo}
+            </if>
+        </where>
+        ORDER BY t_market_service_appraise.appraise_date DESC
+        LIMIT #{queryServiceAppraiseListParam.offset} , #{queryServiceAppraiseListParam.limit}
+        ) filter ON service_appraise.appraise_no = filter.appraise_no
+    </select>
+</mapper>

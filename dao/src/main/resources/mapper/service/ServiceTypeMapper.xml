@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.service.ServiceTypeMapper">
+
+    <resultMap id="serviceType" type="com.yangwang.application.pet.market.model.service.ServiceType">
+        <id property="serviceTypeNo" column="top_service_type_no"/>
+        <result property="serviceTypeName" column="top_service_type_name"/>
+
+        <collection property="child" ofType="com.yangwang.application.pet.market.model.service.ServiceType">
+            <id property="serviceTypeNo" column="leaf_service_type_no"/>
+            <result property="serviceTypeName" column="leaf_service_type_name"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="serviceBusinessVOMap" type="com.yangwang.application.pet.market.model.vo.ServiceBusinessVO">
+        <id property="businessNo" column="business_no"/>
+        <result property="businessName" column="business_name"/>
+        <result property="startHours" column="start_hours"/>
+        <result property="endHours" column="end_hours"/>
+        <result property="contactPhone" column="contact_phone"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="area" column="area"/>
+        <result property="detailAddress" column="detail_address"/>
+        <result property="headImg" column="head_img"/>
+        <result property="distance" column="distance"/>
+        <collection property="serviceNameList" ofType="string">
+            <constructor>
+                <arg column="serviceName"/>
+            </constructor>
+        </collection>
+    </resultMap>
+
+    <select id="listServiceType" resultMap="serviceType">
+        select a.service_type_no   as top_service_type_no,
+               a.service_type_name as top_service_type_name,
+               b.service_type_no   as leaf_service_type_no,
+               b.service_type_name as leaf_service_type_name
+        from (select * from t_service_type where LENGTH(service_type_no) = 1) a
+                 left join (select * from t_service_type where LENGTH(service_type_no) > 1) b
+                           on a.service_type_no = substring(b.service_type_no, 1, 1)
+    </select>
+
+    <select id="listServiceBusiness" resultMap="serviceBusinessVOMap">
+        select c.*, d.service_name as serviceName
+        from (select a.*,
+                     ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{queryServiceBusinessParam.latitude} * PI() / 180 -
+                                                             a.latitude * PI() / 180) / 2), 2) +
+                                                    COS(#{queryServiceBusinessParam.latitude} * PI() / 180) *
+                                                    COS(a.latitude * PI() / 180) * POW(SIN(
+                                                                                                   (#{queryServiceBusinessParam.longitude} * PI() / 180 -
+                                                                                                    a.longitude * PI() / 180) /
+                                                                                                   2), 2))) *
+                           1000) AS distance
+              from t_business_business a
+                       join t_service_info b on a.business_no = b.business_no
+              where a.is_have_service = 1
+                and LEFT(b.service_type_no, 1) = #{queryServiceBusinessParam.serviceTypeNo}
+              GROUP BY a.business_no
+              limit #{queryServiceBusinessParam.offset},#{queryServiceBusinessParam.limit}) c
+                 join t_service_info d on c.business_no = d.business_no
+        order by c.distance;
+    </select>
+
+    <select id="listByBusinessNo" resultType="com.yangwang.application.pet.market.model.service.ServiceType">
+        SELECT a.*
+        FROM t_service_type a
+                 JOIN (
+            SELECT service_type_no
+            FROM t_service_info
+            WHERE business_no = #{businessNo}
+              AND state = 1
+            GROUP BY service_type_no
+        ) filter ON a.service_type_no = filter.service_type_no;
+    </select>
+
+</mapper>

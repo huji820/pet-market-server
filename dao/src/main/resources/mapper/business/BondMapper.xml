@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.BondMapper">
+    <resultMap id="baseBond" type="com.yangwang.application.pet.market.model.business.Bond">
+        <id column="bill_no" property="billNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="customer_no" property="business.customerNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_business_bond (bill_no,
+                                     business_no,
+                                     create_date,
+                                     create_time,
+                                     payment_amount,
+                                     payment_state)
+        VALUES (#{bond.billNo}, #{bond.business.businessNo}, #{bond.createDate}, #{bond.createTime},
+                #{bond.paymentAmount}, #{bond.paymentState});
+    </insert>
+
+    <update id="updateState">
+        UPDATE t_business_bond
+        SET payment_state = #{state}
+        WHERE bill_no = #{bondNo};
+    </update>
+
+    <select id="get" resultMap="baseBond">
+        SELECT bill_no, business_no, create_date, create_time, payment_amount, payment_state
+        FROM t_business_bond
+        WHERE bill_no = #{bondNo};
+    </select>
+
+    <select id="getByBusinessNo" resultMap="baseBond">
+        SELECT
+               a.bill_no,
+               a.business_no,
+               a.create_date,
+               a.create_time,
+               a.payment_amount,
+               a.payment_state,
+               b.customer_no
+        FROM t_business_bond a
+                 LEFt JOIN t_business_business b ON a.business_no = b.business_no
+        WHERE a.business_no = #{businessNo};
+    </select>
+</mapper>

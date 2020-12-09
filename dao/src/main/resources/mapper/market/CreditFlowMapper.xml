@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.CreditFlowMapper">
+    <sql id="t_business_credit_flow_all_column">
+        `flow_no`,
+         `business_no`,
+         `date_time`,
+         `credit`,
+         `total_credit`,
+         `bill_no`,
+         `link_no`,
+         `type`
+    </sql>
+
+    <insert id="save">
+        INSERT INTO t_business_credit_flow
+        (<include refid="t_business_credit_flow_all_column"/>)
+        VALUES (#{creditFlow.flowNo},
+        #{creditFlow.business.businessNo},
+        #{creditFlow.dateTime},
+        #{creditFlow.credit},
+        #{creditFlow.totalCredit},
+        #{creditFlow.billNo},
+        #{creditFlow.linkNo},
+        #{creditFlow.type});
+    </insert>
+
+    <select id="list" resultType="com.yangwang.application.pet.market.model.market.CreditFlow">
+        SELECT
+        <include refid="t_business_credit_flow_all_column"/>
+        FROM t_business_credit_flow
+        WHERE business_no=#{queryCreditFlowParam.businessNo}
+        <if test="queryCreditFlowParam.flowNo != null">
+            AND flow_no = #{queryCreditFlowParam.flowNo}
+        </if>
+        <if test="queryCreditFlowParam.startDateTime != null">
+            AND date_time &gt;= #{queryCreditFlowParam.startDateTime}
+        </if>
+        <if test="queryCreditFlowParam.endDateTime != null">
+            AND date_time &lt;= #{queryCreditFlowParam.endDateTime}
+        </if>
+        LIMIT #{queryCreditFlowParam.offset},#{queryCreditFlowParam.limit}
+    </select>
+</mapper>

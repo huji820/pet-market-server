@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetAppraiseListMapper">
+    <resultMap id="petAppraiseVoResultMap" type="com.yangwang.application.pet.market.model.vo.PetAppraiseVo">
+        <id column="pet_appraise_no" property="petAppraise.appraiseNo"/>
+        <result column="business_no" property="petAppraise.business.businessNo"/>
+        <result column="business_name" property="petAppraise.business.businessName"/>
+        <result column="head_img" property="petAppraise.business.headImg"/>
+        <result column="evaluated_business_no" property="petAppraise.evaluatedBusiness.businessNo"/>
+        <result column="evaluated_business_name" property="petAppraise.evaluatedBusiness.businessName"/>
+        <result column="evaluated_head_img" property="petAppraise.evaluatedBusiness.headImg"/>
+        <result column="order_no" property="petAppraise.petOrder.orderNo"/>
+        <result column="pet_no" property="petAppraise.pet.petNo"/>
+        <result column="praise_degree" property="petAppraise.praiseDegree"/>
+        <result column="content" property="petAppraise.content"/>
+        <result column="appraise_date" property="petAppraise.appraiseDate"/>
+        <collection property="petAppraiseImgList"
+                    ofType="com.yangwang.application.pet.market.model.market.PetAppraiseImg">
+            <id column="appraise_img_no" property="appraiseImgNo"/>
+            <result column="appraise_img" property="imgAddress"/>
+        </collection>
+    </resultMap>
+
+    <select id="list" resultMap="petAppraiseVoResultMap">
+        SELECT
+        pet_appraise.appraise_no AS pet_appraise_no,
+        pet_appraise.business_no,
+        pet_appraise.order_no,
+        pet_appraise.pet_no,
+        pet_appraise.praise_degree,
+        pet_appraise.content,
+        pet_appraise.appraise_date,
+        pet_appraise.evaluated_business_no,
+        pet_appraise_img.appraise_img_no,
+        pet_appraise_img.appraise_img,
+        business.business_name,
+        business.head_img,
+        evaluated_business.business_name AS evaluated_busines_name,
+        evaluated_business.head_img AS evaluated_head_img
+        FROM t_market_pet_appraise pet_appraise
+        LEFT JOIN t_market_pet_appraise_img pet_appraise_img ON pet_appraise.appraise_no = pet_appraise_img.appraise_no
+        LEFT JOIN t_business_business business ON pet_appraise.business_no = business.business_no
+        LEFT JOIN t_business_business evaluated_business ON pet_appraise.business_no = evaluated_business.business_no
+        JOIN (
+        SELECT appraise_no FROM t_market_pet_appraise
+        <where>
+            <if test="queryPetAppraiseListParam.businessNo != null">
+                AND business_no = #{queryPetAppraiseListParam.businessNo}
+            </if>
+            <if test="queryPetAppraiseListParam.evaluatedBusinessNo != null">
+                AND evaluated_business_no = #{queryPetAppraiseListParam.evaluatedBusinessNo}
+            </if>
+            <if test="queryPetAppraiseListParam.petNo">
+                AND pet_no = #{queryPetAppraiseListParam.petNo}
+            </if>
+        </where>
+        ORDER BY appraise_date DESC
+        LIMIT #{queryPetAppraiseListParam.offset} , #{queryPetAppraiseListParam.limit})filter ON
+        pet_appraise.appraise_no = filter.appraise_no
+    </select>
+</mapper>

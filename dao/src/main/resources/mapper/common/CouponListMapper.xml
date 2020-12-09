@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.coupon.CouponListMapper">
+    <select id="listByParam" resultMap="com.yangwang.application.pet.market.dao.market.coupon.CouponMapper.baseCoupon">
+        SELECT a.coupon_id,
+        a.business_no,
+        a.used,
+        a.invalid,
+        a.verify_code,
+        b.coupon_type_id,
+        b.title,
+        b.preferential_type,
+        b.discount,
+        b.value,
+        b.receive_id,
+        b.receive_num,
+        b.coupon_credit,
+        b.expire_notice,
+        b.atLeast,
+        b.least_amount,
+        b.forbid_preference,
+        b.quota,
+        b.discount,
+        b.range_type,
+        b.business_type,
+        b.specify_item_ids,
+        b.specify_service_ids
+        FROM t_common_coupon a
+        LEFT JOIN t_common_coupon_type b ON a.coupon_type_id = b.coupon_type_id
+        <where>
+            <if test="queryCouponListParam.businessNo != null">
+                AND a.business_no = #{queryCouponListParam.businessNo}
+            </if>
+            <if test="queryCouponListParam.couponId != null">
+                AND a.coupon_id = #{queryCouponListParam.couponId}
+            </if>
+            <if test="queryCouponListParam.couponTypeId != null">
+                AND a.coupon_type_id = #{queryCouponListParam.couponTypeId}
+            </if>
+            <if test="queryCouponListParam.used != null">
+                AND a.used = #{queryCouponListParam.used}
+            </if>
+            <if test="queryCouponListParam.invalid != null">
+                AND a.invalid = #{queryCouponListParam.invalid}
+            </if>
+        </where>
+    </select>
+</mapper>

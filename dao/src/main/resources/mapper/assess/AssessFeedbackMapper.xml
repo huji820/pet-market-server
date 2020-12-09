@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.assess.AssessFeedbackMapper">
+    <resultMap id="feedbackVoResultMap" type="com.yangwang.application.pet.market.model.vo.FeedbackVo">
+        <id column="feedback_no" property="feedback.feedbackNo"/>
+        <result column="assess_no" property="feedback.assess.assessNo"/>
+        <result column="title" property="feedback.title"/>
+        <result column="business_no" property="feedback.business.businessNo"/>
+        <result column="business_name" property="feedback.business.businessName"/>
+        <result column="content" property="feedback.content"/>
+        <result column="create_at" property="feedback.createAt"/>
+        <result column="is_adopted" property="feedback.adopted"/>
+        <collection property="feedbackImgs" ofType="com.yangwang.application.pet.market.model.assess.FeedbackImg">
+            <id column="feedback_img_no" property="feedbackImgNo"/>
+            <result column="file_address" property="fileAddress"/>
+            <result column="type" property="type"/>
+        </collection>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="feedbackNo" parameterType="com.yangwang.application.pet.market.model.assess.Feedback">
+        insert into t_assess_feedback (
+          assess_no,
+          title,
+          business_no,
+          content,
+          create_at,
+          is_adopted
+        ) values (
+          #{assess.assessNo},
+          #{title},
+          #{business.businessNo},
+          #{content},
+          #{createAt},
+          #{feedback.adopted}
+        );
+    </insert>
+
+    <select id="listByAssessNo" resultMap="feedbackVoResultMap">
+        SELECT a.feedback_no,
+               a.assess_no,
+               a.title,
+               a.business_no,
+               a.content,
+               a.assess_no,
+               a.create_at,
+               a.is_adopted
+               b.feedback_img_no,
+               b.file_address,
+               b.type,
+               c.business_name
+        FROM t_assess_feedback a
+                 LEFT JOIN t_assess_feedback_img b ON a.feedback_no = b.feedback_no
+                 LEFT JOIN t_business_business c ON a.business_no = c.business_no
+                 JOIN (
+            SELECT feedback_no
+            FROM t_assess_feedback
+            WHERE assess_no = #{assessNo}
+            LIMIT #{offset} , #{limit}
+        ) filter ON a.feedback_no = filter.feedback_no;
+    </select>
+
+    <update id="adoptOrCancelAdoptApply">
+        UPDATE t_assess_feedback
+        SET is_adopted = #{isAdopted}
+        WHERE feedback_no = #{feedbackNo};
+    </update>
+</mapper>

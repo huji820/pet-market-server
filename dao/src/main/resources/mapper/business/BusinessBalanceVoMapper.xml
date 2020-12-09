@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.BusinessBalanceVoMapper">
+    <select id="listByParam" resultType="com.yangwang.application.pet.market.model.business.BusinessBalanceFlowVo">
+        SELECT *
+        FROM (
+                 (
+                     SELECT a.order_no,
+                            a.shop_no,
+                            a.distributor_no,
+                            b.business_name AS distributor_name,
+                            a.buyer_no,
+                            a.create_date,
+                            a.create_time,
+                            a.original_amount,
+                            a.shop_amount,
+                            a.coupon_amount,
+                            a.carriage,
+                            a.retail_price,
+                            a.payment_amount,
+                            a.distributor_amount,
+                            c.business_name AS shop_name
+                     FROM t_market_pet_order a
+                              LEFT JOIN t_business_business b ON a.distributor_no = b.business_no
+                              LEFT JOIN t_business_business c ON a.shop_no = c.business_no
+                     WHERE a.payment_state = 1
+                       AND (
+                             a.shop_no = #{queryBusinessBalanceVoParam.businessNo}
+                             OR a.distributor_no = #{queryBusinessBalanceVoParam.businessNo}
+                         )
+                     ORDER BY CONCAT(a.create_date, ' ', a.create_time) DESC
+                 )
+                 UNION ALL
+                 (
+                     SELECT e.order_no,
+                            e.shop_no,
+                            e.distributor_no,
+                            f.business_name AS distributor_name,
+                            e.buyer_no,
+                            e.create_date,
+                            e.create_time,
+                            e.original_amount,
+                            e.shop_amount,
+                            e.coupon_amount,
+                            e.carriage,
+                            e.original_amount,
+                            e.payment_amount,
+                            e.distributor_amount,
+                            g.business_name AS shop_name
+                     FROM t_market_item_order e
+                              LEFT JOIN t_business_business f ON e.distributor_no = f.business_no
+                              LEFT JOIN t_business_business g ON e.shop_no = g.business_no
+                     WHERE e.payment_state = 1
+                       AND (
+                             e.shop_no = #{queryBusinessBalanceVoParam.businessNo}
+                             OR e.distributor_no = #{queryBusinessBalanceVoParam.businessNo}
+                         )
+                     ORDER BY CONCAT(e.create_date, ' ', e.create_time) DESC
+                 )
+             ) temp
+        LIMIt #{queryBusinessBalanceVoParam.offset} , #{queryBusinessBalanceVoParam.limit};
+    </select>
+</mapper>

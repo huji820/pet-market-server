@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.business.RecommendedBusinessMapper">
+    <select id="list" resultType="com.yangwang.application.pet.market.model.business.Business">
+        SELECT
+        <include refid="com.yangwang.application.pet.market.dao.business.BusinessMapper.t_business_business_all"/>
+        FROM t_business_business
+        WHERE state = '${@com.yangwang.application.pet.market.common.enums.BusinessStateEnum@NORMAL.getType()}'
+        ORDER BY `power` DESC
+        LIMIT #{offset} , #{limit};
+    </select>
+</mapper>

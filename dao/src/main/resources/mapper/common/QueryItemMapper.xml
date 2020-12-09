@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.QueryItemMapper">
+    <select id="listByParam" resultType="com.yangwang.application.pet.market.model.common.Item">
+        SELECT *
+        FROM t_common_item
+        WHERE item_name LIKE CONCAT('%', #{queryQueryListParam.keyWord}, '%')
+        LIMIT #{queryQueryListParam.offset} , #{queryQueryListParam.limit};
+    </select>
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.MyPetMapper">
+    <resultMap id="baseMyPet" type="com.yangwang.application.pet.market.model.common.MyPet">
+        <id column="pet_no" property="petNo"/>
+        <result column="pet_sort_no" property="petSort.petSortNo"/>
+        <result column="pet_sort_name" property="petSort.petSortName"/>
+        <result column="pet_genre_no" property="petGenre.petGenreNo"/>
+        <result column="pet_genre_name" property="petGenre.petGenreName"/>
+        <result column="business_no" property="business.businessNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_common_my_pet (pet_name,
+                                     pet_sort_no,
+                                     pet_genre_no,
+                                     business_no,
+                                     pet_img,
+                                     pet_sex,
+                                     pet_weight,
+                                     pet_birthday,
+                                     coat_color,
+                                     shoulder_height,
+                                     pet_vaccine,
+                                     pet_sterilization)
+        VALUES (#{myPet.petName},
+                #{myPet.petSort.petSortNo},
+                #{myPet.petGenre.petGenreNo},
+                #{myPet.business.businessNo},
+                #{myPet.petImg},
+                #{myPet.petSex},
+                #{myPet.petWeight},
+                #{myPet.petBirthday},
+                #{myPet.coatColor},
+                #{myPet.shoulderHeight},
+                #{myPet.petVaccine},
+                #{myPet.petSterilization});
+    </insert>
+
+    <update id="update">
+        UPDATE t_common_my_pet
+        <set>
+            <if test="myPet.petName != null">
+                pet_name = #{myPet.petName},
+            </if>
+            <if test="myPet.petSort != null and myPet.petSort.petSortNo!= null">
+                pet_sort_no = #{myPet.petSort.petSortNo},
+            </if>
+            <if test="myPet.petGenre != null and myPet.petGenre.petGenreNo!= null">
+                pet_genre_no = #{myPet.petGenre.petGenreNo},
+            </if>
+            <if test="myPet.business != null and myPet.business.businessNo != null">
+                business_no = #{myPet.business.businessNo},
+            </if>
+            <if test="myPet.petImg != null">
+                pet_img = #{myPet.petImg},
+            </if>
+            <if test="myPet.petSex != null">
+                pet_sex = #{myPet.petSex},
+            </if>
+            <if test="myPet.petWeight != null">
+                pet_weight = #{myPet.petWeight},
+            </if>
+            <if test="myPet.petBirthday != null">
+                pet_birthday = #{myPet.petBirthday},
+            </if>
+            <if test="myPet.coatColor != null">
+                coat_color = #{myPet.coatColor},
+            </if>
+            <if test="myPet.shoulderHeight != null">
+                shoulder_height = #{myPet.shoulderHeight},
+            </if>
+            <if test="myPet.petVaccine != null">
+                pet_vaccine = #{myPet.petVaccine},
+            </if>
+            <if test="myPet.petSterilization != null">
+                pet_sterilization = #{myPet.petSterilization}
+            </if>
+        </set>
+        WHERE pet_no = #{myPet.petNo};
+    </update>
+
+    <select id="get" resultMap="baseMyPet">
+        SELECT a.pet_no,
+               a.pet_name,
+               a.pet_sort_no,
+               a.pet_genre_no,
+               a.business_no,
+               a.pet_img,
+               a.pet_weight,
+               a.pet_sex,
+               a.pet_birthday,
+               a.coat_color,
+               a.shoulder_height,
+               a.pet_vaccine,
+               a.pet_sterilization,
+               b.pet_sort_name,
+               c.pet_genre_name
+        FROM t_common_my_pet a
+                 LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+                 LEFT JOIN t_common_pet_genre c ON a.pet_genre_no = c.pet_genre_no
+        WHERE pet_no = #{petNo};
+    </select>
+
+    <select id="listByBusinessNo" resultMap="baseMyPet">
+        SELECT a.pet_no,
+               a.pet_name,
+               a.pet_sort_no,
+               a.pet_genre_no,
+               a.business_no,
+               a.pet_img,
+               a.pet_sex,
+               a.pet_weight,
+               a.pet_birthday,
+               a.coat_color,
+               a.shoulder_height,
+               a.pet_vaccine,
+               a.pet_sterilization,
+               b.pet_sort_name,
+               c.pet_genre_name
+        FROM t_common_my_pet a
+                 LEFT JOIN t_common_pet_sort b ON a.pet_sort_no = b.pet_sort_no
+                 LEFT JOIN t_common_pet_genre c ON a.pet_genre_no = c.pet_genre_no
+        WHERE business_no = #{businessNo};
+    </select>
+
+    <delete id="delete">
+        DELETE
+        FROM t_common_my_pet
+        WHERE pet_no = #{petNo};
+    </delete>
+
+    <select id="countByBusinessNo" resultType="int">
+        SELECT COUNT(1)
+        FROM t_common_my_pet
+        WHERE business_no = #{businessNo};
+    </select>
+</mapper>

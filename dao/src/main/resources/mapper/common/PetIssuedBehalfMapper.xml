@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetIssuedBehalfMapper">
+    <resultMap id="basePet" type="com.yangwang.application.pet.market.model.common.Pet">
+        <id column="pet_no" property="petNo"/>
+        <result column="pet_sort_no" property="petSort.petSortNo"/>
+        <result column="pet_genre_no" property="petGenre.petGenreNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="groupon" property="groupon"/>
+        <result column="source_pet_no" property="sourcePetNo"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_common_pet (`pet_no`, `pet_name`, `pet_sort_no`, `pet_genre_no`, `business_no`, `pet_sex`,
+                                  `pet_sterilization`, `pet_birthday`, `pet_unique_code`, `retail_price`,
+                                  `market_price`, `commission`, `commission_amount`, `create_date`, `create_time`,
+                                  `father_img`,
+                                  `father_name`, `mother_img`, `mother_name`, `pet_description`, `weight`,
+                                  `free_shipping`, `insurance`, `seven_warranty`, `labels`, `collection_qty`,
+                                  `evaluation_qty`, `favorable_rate`,
+                                  `pet_state`, `sales_volume`, `base_price`, `pet_img`, `groupon`,
+                                  `Issued_behalf`, `source_pet_no`)
+        VALUES (#{pet.petNo}, #{pet.petName}, #{pet.petSort.petSortNo},
+                #{pet.petGenre.petGenreNo}, #{pet.business.businessNo}, #{pet.petSex}, #{pet.petSterilization},
+                #{pet.petBirthday}, #{pet.petUniqueCode}, #{pet.retailPrice}, #{pet.marketPrice}, #{pet.commission},
+                #{pet.commissionAmount},
+                #{pet.createDate}, #{pet.createTime}, #{pet.fatherImg}, #{pet.fatherName}, #{pet.motherImg},
+                #{pet.motherName}, #{pet.petDescription}, #{pet.weight}, #{pet.freeShipping}, #{pet.insurance},
+                #{pet.sevenWarranty}, #{pet.labels}, #{pet.collectionQty}, #{pet.evaluationQty}, #{pet.favorableRate},
+                #{pet.petState}, #{pet.salesVolume}, #{pet.basePrice}, #{pet.petImg}, #{pet.groupon},
+                #{pet.IssuedBehalf}, #{pet.sourcePetNo});
+    </insert>
+
+    <select id="listByBusinessNo" resultMap="basePet">
+        SELECT pet_no,
+               pet_name,
+               pet_sort_no,
+               pet_genre_no,
+               business_no,
+               pet_sex,
+               pet_sterilization,
+               pet_birthday,
+               pet_unique_code,
+               retail_price,
+               market_price,
+               commission,
+               create_date,
+               create_time,
+               father_img,
+               father_name,
+               mother_img,
+               mother_name,
+               pet_description,
+               weight,
+               free_shipping,
+               insurance,
+               seven_warranty,
+               labels,
+               collection_qty,
+               evaluation_qty,
+               favorable_rate,
+               pet_state,
+               power,
+               sales_volume,
+               base_price,
+               pet_img,
+               groupon,
+               pet_isSell
+        FROM t_common_pet
+        WHERE business_no = #{businessNo}
+         AND source_pet_no IS NOT NULL;
+    </select>
+
+    <delete id="removePetByPetNo">
+        DELETE FROM t_common_pet WHERE pet_no = #{petNo};
+    </delete>
+
+    <update id="updatePetState">
+        UPDATE t_common_pet
+        SET `pet_state` = #{state}
+        WHERE source_pet_no = #{sourcePetNo};
+    </update>
+
+    <update id="updatePetIsSell">
+        UPDATE t_common_pet
+        SET `pet_isSell` = #{petIsSell}
+        WHERE source_pet_no = #{sourcePetNo};
+    </update>
+
+</mapper>

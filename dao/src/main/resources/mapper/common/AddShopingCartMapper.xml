@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.common.ShoppingCartMapper">
+
+    <insert id="addShopingCart">
+        insert into t_common_shopping_cart (qty,goods_no,business_no,create_time,goods_type)
+        values(#{qty},#{goodsNo},#{businessNo},#{createTime},#{goodsType})
+        on DUPLICATE key update qty=#{qty}+qty;
+    </insert>
+
+    <select id="queryShoppingCart" resultType="com.yangwang.application.pet.market.model.vo.ShoppingCartVO">
+       select * from ( select c.pet_name as goodsName, c.retail_price as goodsPrice, c.pet_description as description, b.cover_address as goodsCoverimg ,
+        a.qty as qty ,a.goods_type as goodsType,a.goods_no as goodsNo,a.business_no as businessNo ,d.customer_name as storeName , a.checked
+        from t_common_shopping_cart a
+        LEFT JOIN t_common_pet_cover b on  a.goods_no=b.pet_no
+        LEFT JOIN t_common_pet c on a.goods_no=c.pet_no
+        LEFT JOIN t_common_customer d on a.business_no= d.business_no
+        where a.goods_type=0 and a.business_no=#{businessNo} GROUP BY a.goods_no
+        UNION ALL
+        select b.item_name as goodsName, b.retail_price as goodsPrice, b.item_description as description,b.cover_img as goodsCoverimg ,
+        a.qty as qty ,a.goods_type as goodsType ,a.goods_no as goodsNo,a.business_no as businessNo ,c.customer_name as storeName ,a.checked
+        from t_common_shopping_cart a
+        LEFT JOIN t_common_item b on  a.goods_no=b.item_no
+        LEFT JOIN t_common_customer c on a.business_no= c.business_no
+        where a.goods_type=1 and a.business_no=#{businessNo} GROUP BY a.goods_no) bigtab limit #{start},#{limit};
+    </select>
+
+    <update id="updateShoppingCartQty">
+        update t_common_shopping_cart set qty=#{qty}
+        where goods_type=#{goodsType} and business_no=#{businessNo} and goods_no=#{goodsNo};
+    </update>
+
+    <delete id="delShoppingCart" parameterType="list">
+        <foreach collection="delShoppingCartVO" item="item">
+            delete from t_common_shopping_cart
+            where goods_type=#{item.goodsType}
+            and business_no=#{item.businessNo}
+            and goods_no=#{item.goodsNo};
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.customer.CustomerMapper">
+
+    <resultMap id="CustomerResultMap" type="com.yangwang.application.pet.market.model.common.Customer">
+        <result column="customer_no" jdbcType="BIGINT" property="customerNo"/>
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="header_image" jdbcType="VARCHAR" property="headerImage"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="openid" jdbcType="VARCHAR" property="openid"/>
+        <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime"/>
+        <result column="registration_date" jdbcType="VARCHAR" property="registrationDate"/>
+        <result column="registration_time" jdbcType="VARCHAR" property="registrationTime"/>
+        <result column="points" jdbcType="DECIMAL" property="points"/>
+        <result column="balance" jdbcType="DECIMAL" property="balance"/>
+        <result column="share_station_no" jdbcType="VARCHAR" property="shareStationNo"/>
+        <result column="unionId" jdbcType="VARCHAR" property="unionId"/>
+
+        <association property="business" javaType="com.yangwang.application.pet.market.model.business.Business">
+            <result property="businessNo" column="business_no"/>
+        </association>
+    </resultMap>
+
+    <select id="getByUnionId" resultType="com.yangwang.application.pet.market.model.common.Customer">
+        SELECT *
+        FROM t_common_customer
+        WHERE unionId = #{unionId};
+    </select>
+
+    <!--用户注册-->
+    <insert id="insertCustomer" parameterType="com.yangwang.application.pet.market.model.common.Customer">
+          insert into t_common_customer
+          (customer_no,customer_name,phone,header_image,sex,
+           last_login_time,registration_date,registration_time,
+           points,balance,unionId,share_business_no,share_station_no,
+           business_no,openid)
+            values (#{customer.customerNo},
+                    #{customer.customerName},
+                    #{customer.phone},
+                    #{customer.headerImage},
+                    #{customer.sex},
+                    #{customer.lastLoginTime},
+                    #{customer.registrationDate},
+                    #{customer.registrationTime},
+                    #{customer.points},
+                    #{customer.balance},
+                    #{customer.unionId},
+                    <choose>
+                    <when test="customer.shareBusiness != null">
+                      #{customer.shareBusiness.businessNo},
+                    </when>
+                    <otherwise>
+                        '',
+                    </otherwise>
+                    </choose>
+                    <choose>
+                    <when test="customer.shareStationNo != null">
+                      #{customer.shareStationNo},
+                    </when>
+                    <otherwise>
+                        '',
+                    </otherwise>
+                    </choose>
+                    <choose>
+                    <when test="customer.business != null">
+                        #{customer.business.businessNo},
+                    </when>
+                    <otherwise>
+                        '',
+                    </otherwise>
+                    </choose>
+                    #{customer.openid}
+                    );
+
+    </insert>
+
+    <!-- 修改用户信息 -->
+    <update id="updateCustomer" parameterType="com.yangwang.application.pet.market.model.common.Customer">
+        update t_common_customer
+        <set>
+            <if test="customer.customerName != null">
+                customer_name = #{customer.customerName},
+            </if>
+            <if test="customer.phone != null">
+                phone = #{customer.phone},
+            </if>
+            <if test="customer.headerImage != null">
+                header_image = #{customer.headerImage},
+            </if>
+            <if test="customer.sex != null">
+                sex = #{customer.sex},
+            </if>
+            <if test="customer.openid != null">
+                openid = #{customer.openid},
+            </if>
+            <if test="customer.lastLoginTime != null">
+                last_login_time = #{customer.lastLoginTime},
+            </if>
+            <if test="customer.registrationDate != null">
+                registration_date = #{customer.registrationDate},
+            </if>
+            <if test="customer.registrationTime != null">
+                registration_time = #{customer.registrationTime},
+            </if>
+            <if test="customer.points != null">
+                points = #{customer.points},
+            </if>
+            <if test="customer.balance != null">
+                balance = #{customer.balance},
+            </if>
+            <if test="customer.shareBusiness != null">
+                share_business_no = #{customer.shareBusiness.businessNo},
+            </if>
+            <if test="customer.shareStationNo != null">
+                share_station_no = #{customer.shareStationNo},
+            </if>
+            <if test="customer.business.businessNo != null">
+                business_no = #{customer.business.businessNo},
+            </if>
+            <if test="customer.unionId != null">
+                unionId = #{customer.unionId},
+            </if>
+        </set>
+        WHERE
+        <if test="customer.customerNo != null">
+            customer_no = #{customer.customerNo}
+        </if>
+    </update>
+
+    <select id="getByPhone" resultType="com.yangwang.application.pet.market.model.common.Customer">
+        SELECT customer_no,
+               customer_name,
+               phone,
+               header_image,
+               sex,
+               last_login_time,
+               registration_date,
+               registration_time,
+               points,
+               balance,
+               share_business_no,
+               share_station_no,
+               business_no,
+               unionId
+        FROM t_common_customer
+        WHERE phone = #{phone};
+    </select>
+
+    <select id="getCustomerRecommendBusinessNo" resultType="java.lang.String">
+        SELECT share_business_no
+        FROM `t_common_customer`
+        WHERE `customer_no` = #{customerNo};
+    </select>
+
+    <select id="getCustomerRecommendStationNo" resultType="java.lang.String">
+        SELECT c.business_no
+        FROM `t_common_customer` a
+        LEFT JOIN `t_consign_station` b ON a.share_station_no = b.station_no
+        LEFT JOIN `t_business_business` c ON b.phone = c.contact_phone
+        WHERE a.`customer_no` = #{customerNo};
+    </select>
+</mapper>

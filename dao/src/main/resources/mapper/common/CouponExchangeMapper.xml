@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yangwang.application.pet.market.dao.market.coupon.CouponExchangeMapper">
+
+    <select id="countCouponByBusinessNo" resultType="int">
+        select count(*) from t_common_coupon
+        where coupon_type_id = #{couponTypeID}
+        and business_no = #{businessNo};
+    </select>
+
+    <update id="updateCouponByVerifyCode" parameterType="string">
+        update t_common_coupon
+        set used = 1
+        where verify_code = #{verifyCode};
+    </update>
+</mapper>

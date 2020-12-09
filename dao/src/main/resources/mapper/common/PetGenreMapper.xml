@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetGenreMapper">
+    <resultMap id="basePetGenre" type="com.yangwang.application.pet.market.model.common.PetGenre">
+        <id column="pet_genre_no" property="petGenreNo"/>
+        <result column="pet_genre_name" property="petGenreName"/>
+        <result column="pet_genre_img" property="petGenreImg"/>
+        <result column="pet_sort_no" property="petSort.petSortNo"/>
+    </resultMap>
+
+    <select id="listByParam" resultType="com.yangwang.application.pet.market.model.common.PetGenre">
+        SELECT pet_genre_no, pet_genre_name, pet_sort_no, pet_genre_img
+        FROM t_common_pet_genre
+        <where>
+            <if test="queryPetGenreListParam.petSortNo != null">
+                pet_sort_no = #{queryPetGenreListParam.petSortNo}
+            </if>
+            <if test="queryPetGenreListParam.keyWord != null">
+                AND (
+                pet_genre_name LIKE CONCAT('%',#{queryPetGenreListParam.keyWord},'%')
+                OR pinyin LIKE CONCAT('%',#{queryPetGenreListParam.keyWord},'%')
+                )
+            </if>
+        </where>
+        <if test="queryPetGenreListParam.offset != null and queryPetGenreListParam.limit != null">
+            LIMIT #{queryPetGenreListParam.offset} , #{queryPetGenreListParam.limit}
+        </if>
+    </select>
+
+    <select id="get" resultMap="basePetGenre">
+        SELECT pet_genre_no, pet_genre_name, pet_sort_no, pet_genre_img
+        FROM t_common_pet_genre
+        WHERE pet_genre_no = #{petGenreNo};
+    </select>
+</mapper>

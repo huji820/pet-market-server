@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetOrderMapper">
+    <resultMap id="baseOrder" type="com.yangwang.application.pet.market.model.market.BaseOrder">
+        <id column="order_no" property="orderNo"/>
+        <result column="buyer_business_no" property="buyer.businessNo"/>
+        <result column="buyer_business_name" property="buyer.businessName"/>
+        <result column="buyer_start_hours" property="buyer.startHours"/>
+        <result column="buyer_end_hours" property="buyer.endHours"/>
+        <result column="buyer_contact" property="buyer.contact"/>
+        <result column="buyer_contact_phone" property="buyer.contactPhone"/>
+        <result column="buyer_describe" property="buyer.describe"/>
+        <result column="buyer_auth_type" property="buyer.authType"/>
+        <result column="buyer_province" property="buyer.province"/>
+        <result column="buyer_city" property="buyer.city"/>
+        <result column="buyer_area" property="buyer.area"/>
+        <result column="buyer_detail_address" property="buyer.detailAddress"/>
+        <result column="buyer_head_img" property="buyer.headImg"/>
+        <result column="buyer_state" property="buyer.state"/>
+        <result column="buyer_customer_no" property="buyer.customerNo"/>
+        <result column="shop_business_no" property="shop.businessNo"/>
+        <result column="shop_business_name" property="shop.businessName"/>
+        <result column="shop_contact_phone" property="shop.contactPhone"/>
+        <result column="shop_describe" property="shop.describe"/>
+        <result column="shop_pay_bond" property="shop.payBond"/>
+        <result column="shop_auth_type" property="shop.authType"/>
+        <result column="shop_province" property="shop.province"/>
+        <result column="shop_city" property="shop.city"/>
+        <result column="shop_area" property="shop.area"/>
+        <result column="shop_detail_address" property="shop.detailAddress"/>
+        <result column="shop_head_img" property="shop.headImg"/>
+        <result column="shop_state" property="shop.state"/>
+        <result column="shop_customer_no" property="shop.customerNo"/>
+        <result column="distributor_business_no" property="distributor.businessNo"/>
+        <result column="distributor_business_name" property="distributor.businessName"/>
+        <result column="distributor_contact" property="distributor.contact"/>
+        <result column="distributor_contact_phone" property="distributor.contactPhone"/>
+        <result column="distributor_describe" property="distributor.describe"/>
+        <result column="distributor_pay_bond" property="distributor.payBond"/>
+        <result column="distributor_auth_type" property="distributor.authType"/>
+        <result column="distributor_province" property="distributor.province"/>
+        <result column="distributor_city" property="distributor.city"/>
+        <result column="distributor_area" property="distributor.area"/>
+        <result column="distributor_detail_address" property="distributor.area"/>
+        <result column="distributor_head_img" property="distributor.headImg"/>
+        <result column="distributor_state" property="distributor.state"/>
+        <result column="distributor_customer_no" property="distributor.customerNo"/>
+        <result column="coupon_id" property="coupon.couponID"/>
+        <result column="coupon_type_id" property="coupon.couponType.couponTypeID"/>
+        <result column="title" property="coupon.couponType.title"/>
+        <result column="used" property="coupon.used"/>
+        <result column="invalid" property="coupon.invalid"/>
+        <result column="verify_code" property="coupon.verifyCode"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_time" property="createTime"/>
+        <result column="qty" property="qty"/>
+        <result column="coupon_amount" property="couponAmount"/>
+        <result column="carriage" property="carriage"/>
+        <result column="free_shipping" property="freeShipping"/>
+        <result column="retail_price" property="retailPrice"/>
+        <result column="payment_amount" property="paymentAmount"/>
+        <result column="shop_amount" property="shopAmount"/>
+        <result column="original_amount" property="originalAmount"/>
+        <result column="distributor_amount" property="distributorAmount"/>
+        <result column="receiving_name" property="receivingName"/>
+        <result column="receiving_phone" property="receivingPhone"/>
+        <result column="receiving_address" property="receivingAddress"/>
+        <result column="payment_state" property="paymentState"/>
+        <result column="driver_state" property="driverState"/>
+        <result column="receive_state" property="receiveState"/>
+        <result column="evaluate_state" property="evaluateState"/>
+        <result column="refunds_state" property="refundsState"/>
+        <result column="way_bill" property="wayBill"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="refund_no" property="refundNo"/>
+    </resultMap>
+
+    <sql id="baseOrderColumn">
+        a.order_no,
+               a.create_date,
+               a.create_time,
+               a.qty,
+               a.coupon_amount,
+               a.carriage,
+               a.free_shipping,
+               a.retail_price,
+               a.payment_amount,
+               a.shop_amount,
+               a.original_amount,
+               a.distributor_amount,
+               a.receiving_name,
+               a.receiving_phone,
+               a.receiving_address,
+               a.payment_state,
+               a.driver_state,
+               a.receive_state,
+               a.evaluate_state,
+               a.refunds_state,
+               a.way_bill,
+               a.out_trade_no,
+               a.refund_no,
+               b.business_no    AS buyer_business_no,
+               b.business_name  AS buyer_business_name,
+               b.start_hours    AS buyer_start_hours,
+               b.end_hours      AS buyer_end_hours,
+               b.contact        AS buyer_contact,
+               b.contact_phone  AS buyer_contact_phone,
+               b.`describe`     AS buyer_describe,
+               b.auth_type      AS buyer_auth_type,
+               b.province       AS buyer_province,
+               b.city           AS buyer_city,
+               b.area           AS buyer_area,
+               b.detail_address AS buyer_detail_address,
+               b.head_img       AS buyer_head_img,
+               b.state          AS buyer_state,
+               b.customer_no    AS buyer_customer_no,
+               c.business_no    AS shop_business_no,
+               c.business_name  AS shop_business_name,
+               c.contact        AS shop_contact,
+               c.contact_phone  AS shop_contact_phone,
+               c.`describe`     AS shop_describe,
+               c.pay_bond       AS shop_pay_bond,
+               c.auth_type      AS shop_auth_type,
+               c.province       AS shop_province,
+               c.city           AS shop_city,
+               c.area           AS shop_area,
+               c.detail_address AS shop_detail_address,
+               c.head_img       AS shop_head_img,
+               c.state          AS shop_state,
+               c.customer_no    AS shop_customer_no,
+               d.business_no    AS distributor_business_no,
+               d.business_name  AS distributor_business_name,
+               d.contact        AS distributor_contact,
+               d.contact_phone  AS distributor_contact_phone,
+               d.`describe`     AS distributor_describe,
+               d.pay_bond       AS distributor_pay_bond,
+               d.auth_type      AS distributor_auth_type,
+               d.province       AS distributor_province,
+               d.city           AS distributor_city,
+               d.area           AS distributor_area,
+               d.detail_address AS distributor_detail_address,
+               d.head_img       AS distributor_head_img,
+               d.state          AS distributor_state,
+               d.customer_no    AS distributor_customer_no,
+               e.coupon_id,
+               e.coupon_type_id,
+               e.used,
+               e.invalid,
+               e.verify_code,
+                f.title
+    </sql>
+
+
+    <sql id="petOrderColumn">
+        a.order_no,
+        a.create_date,
+        a.create_time,
+        a.qty,
+        a.coupon_amount,
+        a.carriage,
+        a.free_shipping,
+        a.retail_price,
+        a.payment_amount,
+        a.shop_amount,
+        a.original_amount,
+        a.distributor_amount,
+        a.receiving_name,
+        a.receiving_phone,
+        a.receiving_address,
+        a.payment_state,
+        a.driver_state,
+        a.receive_state,
+        a.evaluate_state,
+        a.refunds_state,
+        a.way_bill,
+        a.out_trade_no,
+        a.refund_no,
+        a.payment_voucher,
+        b.business_no    AS buyer_business_no,
+        b.business_name  AS buyer_business_name,
+        b.start_hours    AS buyer_start_hours,
+        b.end_hours      AS buyer_end_hours,
+        b.contact        AS buyer_contact,
+        b.contact_phone  AS buyer_contact_phone,
+        b.`describe`     AS buyer_describe,
+        b.auth_type      AS buyer_auth_type,
+        b.province       AS buyer_province,
+        b.city           AS buyer_city,
+        b.area           AS buyer_area,
+        b.detail_address AS buyer_detail_address,
+        b.head_img       AS buyer_head_img,
+        b.state          AS buyer_state,
+        b.customer_no    AS buyer_customer_no,
+        c.business_no    AS shop_business_no,
+        c.business_name  AS shop_business_name,
+        c.contact        AS shop_contact,
+        c.contact_phone  AS shop_contact_phone,
+        c.`describe`     AS shop_describe,
+        c.pay_bond       AS shop_pay_bond,
+        c.auth_type      AS shop_auth_type,
+        c.province       AS shop_province,
+        c.city           AS shop_city,
+        c.area           AS shop_area,
+        c.detail_address AS shop_detail_address,
+        c.head_img       AS shop_head_img,
+        c.state          AS shop_state,
+        c.customer_no    AS shop_customer_no,
+        d.business_no    AS distributor_business_no,
+        d.business_name  AS distributor_business_name,
+        d.contact        AS distributor_contact,
+        d.contact_phone  AS distributor_contact_phone,
+        d.`describe`     AS distributor_describe,
+        d.pay_bond       AS distributor_pay_bond,
+        d.auth_type      AS distributor_auth_type,
+        d.province       AS distributor_province,
+        d.city           AS distributor_city,
+        d.area           AS distributor_area,
+        d.detail_address AS distributor_detail_address,
+        d.head_img       AS distributor_head_img,
+        d.state          AS distributor_state,
+        d.customer_no    AS distributor_customer_no,
+        e.coupon_id,
+        e.coupon_type_id,
+        e.used,
+        e.invalid,
+        e.verify_code ,
+        f.title,
+        a.pet_no,
+        a.pet_name,
+        a.pet_sort_no,
+        a.pet_genre_no,
+        a.pet_sex,
+        a.pet_sterilization,
+        a.pet_birthday,
+        a.pet_unique_code,
+        a.weight,
+        a.insurance,
+        a.seven_warranty,
+        a.pet_img,
+        a.groupon
+    </sql>
+
+    <sql id="leftJoinTable">
+        LEFT JOIN t_business_business b ON a.buyer_no = b.business_no
+        LEFT JOIN t_business_business c ON a.shop_no = c.business_no
+        LEFT JOIN t_business_business d ON a.distributor_no = d.business_no
+        LEFT JOIN t_common_coupon e ON a.coupon_id = e.coupon_id
+        LEFT JOIN t_common_coupon_type f ON e.coupon_type_id = f.coupon_type_id
+    </sql>
+
+
+    <resultMap id="petOrder" type="com.yangwang.application.pet.market.model.market.PetOrder" extends="baseOrder">
+        <result column="pet_no" property="petNo"/>
+        <result column="pet_name" property="petName"/>
+        <result column="pet_sort_no" property="petSortNo"/>
+        <result column="pet_genre_no" property="petGenreNo"/>
+        <result column="pet_sex" property="petSex"/>
+        <result column="pet_sterilization" property="petSterilization"/>
+        <result column="pet_birthday" property="petBirthday"/>
+        <result column="pet_unique_code" property="petUniqueCode"/>
+        <result column="weight" property="weight"/>
+        <result column="insurance" property="insurance"/>
+        <result column="seven_warranty" property="sevenWarranty"/>
+        <result column="pet_img" property="petImg"/>
+        <result column="groupon" property="groupon"/>
+        <result column="payment_voucher" property="paymentVoucher"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_market_pet_order (
+        order_no,
+        shop_no,
+        distributor_no,
+        buyer_no,
+        create_date,
+        create_time,
+        qty,
+        coupon_id,
+        coupon_amount,
+        carriage,
+        free_shipping,
+        retail_price,
+        payment_amount,
+        shop_amount,
+        original_amount,
+        distributor_amount,
+        receiving_name,
+        receiving_phone,
+        receiving_address,
+        payment_state,
+        driver_state,
+        receive_state,
+        evaluate_state,
+        refunds_state,
+        way_bill,
+        out_trade_no,
+        refund_no,
+        pet_no,
+        pet_name,
+        pet_sort_no,
+        pet_genre_no,
+        pet_sex,
+        pet_sterilization,
+        pet_birthday,
+        pet_unique_code,
+        weight,
+        insurance,
+        seven_warranty,
+        pet_img,
+        groupon)
+        VALUES (#{petOrder.orderNo},
+        #{petOrder.shop.businessNo},
+        <choose>
+            <when test="petOrder.distributor != null">
+                #{petOrder.distributor.businessNo},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{petOrder.buyer.businessNo},
+        #{petOrder.createDate},
+        #{petOrder.createTime},
+        #{petOrder.qty},
+        <choose>
+            <when test="petOrder.coupon != null">
+                #{petOrder.coupon.couponID},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{petOrder.couponAmount},
+        #{petOrder.carriage},
+        #{petOrder.freeShipping},
+        #{petOrder.retailPrice},
+        #{petOrder.paymentAmount},
+        #{petOrder.shopAmount},
+        #{petOrder.originalAmount},
+        #{petOrder.distributorAmount},
+        #{petOrder.receivingName},
+        #{petOrder.receivingPhone},
+        #{petOrder.receivingAddress},
+        #{petOrder.paymentState},
+        #{petOrder.driverState},
+        #{petOrder.receiveState},
+        #{petOrder.evaluateState},
+        #{petOrder.refundsState},
+        #{petOrder.wayBill},
+        #{petOrder.outTradeNo},
+        #{petOrder.refundNo},
+        #{petOrder.petNo},
+        #{petOrder.petName},
+        #{petOrder.petSortNo},
+        #{petOrder.petGenreNo},
+        #{petOrder.petSex},
+        #{petOrder.petSterilization},
+        #{petOrder.petBirthday},
+        #{petOrder.petUniqueCode},
+        #{petOrder.weight},
+        #{petOrder.insurance},
+        #{petOrder.sevenWarranty},
+        #{petOrder.petImg},
+        #{petOrder.groupon});
+    </insert>
+
+    <update id="updatePaymentState">
+        UPDATE t_market_pet_order
+        SET payment_state = #{paymentState}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateDriverState">
+        UPDATE t_market_pet_order
+        SET driver_state = #{driverState}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateOrderCarriage">
+        update t_market_pet_order
+        SET carriage = #{carriage},
+        payment_amount = #{paymentAmount}
+        where order_no = #{orderNo}
+    </update>
+    
+    <update id="updateReceiveState">
+        UPDATE t_market_pet_order
+        SEt receive_state = #{receiveState}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateEvaluateState">
+        UPDATE t_market_pet_order
+        SET evaluate_state = #{evaluateState}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateRefundsState">
+        UPDATE t_market_pet_order
+        SET refunds_state = #{refundsState}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateWayBill">
+        UPDATE t_market_pet_order
+        SET way_bill = #{wayBill}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateOutTradeNo">
+        UPDATE t_market_pet_order
+        SET out_trade_no = #{outTradeNo}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="updateRefundNo">
+        UPDATE t_market_pet_order
+        SET refund_no = #{refundNo}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <select id="get" resultMap="petOrder">
+        SELECT
+        <include refid="petOrderColumn"/>
+        FROM t_market_pet_order a
+        <include refid="leftJoinTable"/>
+        WHERE a.order_no = #{orderNo} LIMIT 1;
+    </select>
+
+    <select id="getPetOrderByWaybill" resultMap="petOrder">
+        SELECT
+        <include refid="petOrderColumn"/>
+        FROM t_market_pet_order a
+        <include refid="leftJoinTable"/>
+        WHERE a.way_bill = #{wayBill} LIMIT 1;
+    </select>
+
+    <update id="cancelUnpaidOrder">
+        UPDATE t_market_pet_order
+        SET payment_state = '${@com.yangwang.application.pet.market.common.enums.OrderStateEnum@PAY_CANCEL.getState}'
+        WHERE CONCAT(create_date, ' ', create_time) &lt; #{beforeDateTime}
+          AND payment_state = '${@com.yangwang.application.pet.market.common.enums.OrderStateEnum@PAY_UNPAID.getState}'
+    </update>
+
+    <update id="updateOrderPrice" parameterType="com.yangwang.application.pet.market.model.market.PetOrder">
+        UPDATE t_market_pet_order
+        SET payment_amount = #{paymentAmount},
+            out_trade_no = #{outTradeNo}
+        WHERE order_no = #{orderNo};
+    </update>
+
+    <update id="uploadPaymentVoucher">
+        update t_market_pet_order
+        SET payment_voucher = #{paymentVoucher}
+        WHERE order_no = #{orderNo};
+    </update>
+
+</mapper>

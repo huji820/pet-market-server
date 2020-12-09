@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetVaccineMapper">
+    <resultMap id="petVaccine" type="com.yangwang.application.pet.market.model.common.PetVaccine">
+        <id column="vaccine_no" property="vaccineNo"/>
+        <result column="pet_no" property="pet.petNo"/>
+        <result column="vaccine_date" property="vaccineDate"/>
+        <result column="vaccine_brand_name" property="vaccineBrandName"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_common_pet_vaccine (`pet_no`, `vaccine_date`, `vaccine_brand_name`)
+        VALUES (#{petVaccine.pet.petNo}, #{petVaccine.vaccineDate}, #{petVaccine.vaccineBrandName});
+    </insert>
+
+    <insert id="saveList">
+        <if test="@com.yangwang.application.pet.market.common.utils.CollectionUtils@isNotEmpty(petVaccineList)">
+            INSERT INTO t_common_pet_vaccine (`pet_no`, `vaccine_date`, `vaccine_brand_name`) VALUES
+            <foreach collection="petVaccineList" item="petVaccine" separator="," close=";">
+                (#{petVaccine.pet.petNo}, #{petVaccine.vaccineDate}, #{petVaccine.vaccineBrandName})
+            </foreach>
+        </if>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_common_pet_vaccine
+        WHERE `pet_no` = #{petNo};
+    </delete>
+
+    <select id="listByPetNo" resultMap="petVaccine">
+        SELECT `vaccine_no`, `pet_no`, `vaccine_date`, `vaccine_brand_name`
+        FROM t_common_pet_vaccine
+        WHERE `pet_no` = #{petNo};
+    </select>
+</mapper>

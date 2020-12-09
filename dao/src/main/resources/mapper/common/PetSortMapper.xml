@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetSortMapper">
+    <select id="listByParam" resultType="com.yangwang.application.pet.market.model.common.PetSort">
+        SELECT pet_sort_no, pet_sort_name
+        FROM t_common_pet_sort
+        <where>
+            <if test="pagingQueryParam.keyWord != null">
+                pet_sort_name LIKE CONCAT(#{pagingQueryParam.keyWord},"%") OR
+                pinyin LIKE CONCAT(#{pagingQueryParam.keyWord},"%")
+            </if>
+        </where>
+        <if test="pagingQueryParam.offset != null and pagingQueryParam.limit != null">
+            LIMIT #{pagingQueryParam.offset} , #{pagingQueryParam.limit}
+        </if>
+    </select>
+
+    <select id="get" resultType="com.yangwang.application.pet.market.model.common.PetSort">
+        SELECT pet_sort_no, pet_sort_name
+        FROM t_common_pet_sort
+        WHERE pet_sort_no = #{petSortNo};
+    </select>
+</mapper>

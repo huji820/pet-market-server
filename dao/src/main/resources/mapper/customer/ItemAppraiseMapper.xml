@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.item.ItemAppraiseMapper">
+    <resultMap id="baseItemAppraise" type="com.yangwang.application.pet.market.model.market.ItemAppraise">
+        <id column="appraise_no" property="appraiseNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="order_no" property="itemOrder.orderNo"/>
+        <result column="item_no" property="item.itemNo"/>
+        <result column="praise_degree" property="praiseDegree"/>
+        <result column="content" property="content"/>
+        <result column="appraise_date" property="appraiseDate"/>
+        <result column="evaluated_business_no" property="evaluatedBusiness.businessNo"/>
+    </resultMap>
+
+    <insert id="save">
+        <selectKey order="AFTER" keyProperty="itemAppraise.appraiseNo" resultType="int">
+            SELECT @@IDENTITY AS appraise_no
+        </selectKey>
+        INSERT INTO t_market_item_appraise (business_no,
+        order_no,
+        item_no,
+        praise_degree,
+        content,
+        appraise_date,
+        evaluated_business_no)
+        VALUES (#{itemAppraise.business.businessNo},
+        #{itemAppraise.itemOrder.orderNo},
+        #{itemAppraise.praiseDegree},
+        #{itemAppraise.item.itemNo},
+        #{itemAppraise.content},
+        #{itemAppraise.appraiseDate},
+        #{itemAppraise.evaluatedBusiness.businessNo});
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_market_item_appraise
+        WHERE appraise_no = #{itemAppraiseNo};
+    </delete>
+
+    <select id="getByAppraise" resultMap="baseItemAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               item_no,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_item_appraise
+        WHERE order_no = #{itemAppraise.itemOrder.orderNo}
+          AND business_no = #{itemAppraise.business.businessNo}
+    </select>
+
+    <select id="get" resultMap="baseItemAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               item_no,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_item_appraise
+        WHERE appraise_no = #{itemAppraiseNo};
+    </select>
+
+    <select id="countByItemNo" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_item_appraise
+        WHERE item_no = #{itemNo};
+    </select>
+
+    <select id="countByItemNoAndUpPraiseDegree" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_item_appraise
+        WHERE item_no = #{itemNo}
+          AND praise_degree >= #{praiseDegree}
+    </select>
+</mapper>

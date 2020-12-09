@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangwang.application.pet.market.dao.market.pet.PetAppraiseMapper">
+    <resultMap id="basePetAppraise" type="com.yangwang.application.pet.market.model.market.PetAppraise">
+        <id column="appraise_no" property="appraiseNo"/>
+        <result column="business_no" property="business.businessNo"/>
+        <result column="order_no" property="petOrder.orderNo"/>
+        <result column="pet_no" property="pet.petNo"/>
+        <result column="praise_degree" property="praiseDegree"/>
+        <result column="content" property="content"/>
+        <result column="appraise_date" property="appraiseDate"/>
+        <result column="evaluated_business_no" property="evaluatedBusiness.businessNo"/>
+    </resultMap>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="appraiseNo"
+            parameterType="com.yangwang.application.pet.market.model.market.PetAppraise">
+        <selectKey resultType="int" keyProperty="petAppraise.appraiseNo" order="AFTER">
+            SELECT @@IDENTITY AS appraise_no
+        </selectKey>
+        INSERT INTO t_market_pet_appraise
+        (business_no,
+        order_no,
+        pet_no,
+        praise_degree,
+        content,
+        appraise_date,
+        evaluated_business_no)
+        VALUES (#{petAppraise.business.businessNo},
+        #{petAppraise.petOrder.orderNo},
+        #{petAppraise.pet.petNo},
+        #{petAppraise.praiseDegree},
+        #{petAppraise.content},
+        #{petAppraise.appraiseDate},
+        #{petAppraise.evaluatedBusiness.businessNo});
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM t_market_pet_appraise
+        WHERE appraise_no = #{petAppraiseNo};
+    </delete>
+
+    <select id="get" resultMap="basePetAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               pet_no,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_pet_appraise
+        WHERE appraise_no = #{petAppraiseNo};
+    </select>
+
+    <select id="countByPetNo" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_pet_appraise
+        WHERE pet_no = #{petNo};
+    </select>
+
+    <select id="countByUpPraiseDegree" resultType="int">
+        SELECT COUNT(1)
+        FROM t_market_pet_appraise
+        WHERE pet_no = #{petNo}
+          AND praise_degree >= #{praiseDegree}
+    </select>
+
+    <select id="getByPetAppraise" resultMap="basePetAppraise">
+        SELECT appraise_no,
+               business_no,
+               order_no,
+               pet_no,
+               praise_degree,
+               content,
+               appraise_date,
+               evaluated_business_no
+        FROM t_market_pet_appraise
+        WHERE order_no = #{petAppraise.petOrder.orderNo}
+          AND business_no = #{petAppraise.business.businessNo}
+    </select>
+</mapper>
